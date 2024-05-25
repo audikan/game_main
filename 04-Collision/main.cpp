@@ -1,4 +1,4 @@
-/* =============================================================
+﻿/* =============================================================
 	INTRODUCTION TO GAME PROGRAMMING SE102
 	
 	SAMPLE 04 - COLLISION
@@ -33,6 +33,7 @@
 
 #include "String"
 #include "Mario.h"
+#include "Box.h"
 #include "Brick.h"
 #include "Goomba.h"
 #include "Coin.h"
@@ -284,7 +285,6 @@ void LoadAssetsMario()
 	ani->Add(ID_SPRITE_MARIO_SMALL_JUMP_RUN_RIGHT + 1);
 	animations->Add(ID_ANI_MARIO_SMALL_JUMP_RUN_RIGHT, ani);
 }
-
 void LoadAssetsGoomba()
 {
 	CTextures* textures = CTextures::GetInstance();
@@ -339,7 +339,6 @@ void LoadAssetsCoin()
 	ani->Add(ID_SPRITE_COIN + 3);
 	animations->Add(ID_ANI_COIN, ani);
 }
-
 void LoadAssetsOther()
 {
 	CTextures* textures = CTextures::GetInstance();
@@ -350,6 +349,32 @@ void LoadAssetsOther()
 	sprites->Add(ID_SPRITE_CLOUD_MIDDLE, 408, 117, 408 + 15, 117 + 15, texMisc);
 	sprites->Add(ID_SPRITE_CLOUD_END, 426, 117, 426 + 15, 117 + 15, texMisc);
 
+}
+
+void LoadAssetsBox() {
+	CTextures* textures = CTextures::GetInstance();
+	CSprites* sprites = CSprites::GetInstance();
+	CAnimations* animations = CAnimations::GetInstance();
+
+	LPTEXTURE texMisc = textures->Get(ID_TEX_MISC);
+	sprites->Add(ID_SPRITE_BOX + 1, 300, 117, 315, 132, texMisc);
+	sprites->Add(ID_SPRITE_BOX + 2, 318, 117, 333, 132, texMisc);
+	sprites->Add(ID_SPRITE_BOX + 3, 336, 117, 351, 132, texMisc);
+	sprites->Add(ID_SPRITE_BOX + 4, 354, 117, 369, 132, texMisc);
+
+	//sprites->Add(ID_SPRITE_BOX_TOUCH + 1, 372, 369, 387, 132, texMisc);
+
+	LPANIMATION ani;
+	ani = new CAnimation(100);
+	ani->Add(ID_SPRITE_BOX + 1);
+	ani->Add(ID_SPRITE_BOX + 2);
+	ani->Add(ID_SPRITE_BOX + 3);
+	ani->Add(ID_SPRITE_BOX + 4);
+	animations->Add(ID_ANI_BOX, ani);
+
+	//ani = new CAnimation(100);
+	//ani->Add(ID_SPRITE_BOX_TOUCH + 1);
+	//animations->Add(ID_SPRITE_BOX_TOUCH, ani);
 }
 
 /*
@@ -370,6 +395,7 @@ void LoadResources()
 	LoadAssetsMario();
 	LoadAssetsGoomba();
 	LoadAssetsBrick();
+	LoadAssetsBox();
 	LoadAssetsCoin();
 	LoadAssetsOther();
 }
@@ -394,29 +420,34 @@ void ClearScene()
 #define BRICK_Y GROUND_Y + 20.0f
 #define NUM_BRICKS 70
 
-/*
-* Reload all objects of current scene 
-* NOTE: super bad way to build a scene! We need to load a scene from data instead of hard-coding like this 
-*/
+//================================ TẠO CÁC OBJECT  ==============================
 void Reload()
 {
 	ClearScene();
-
-	// Main ground
+	// nền gạch dưới chân
 	for (int i = 0; i < NUM_BRICKS; i++)
 	{
 		CBrick* b = new CBrick(i * BRICK_WIDTH * 1.0f, BRICK_Y);
 		objects.push_back(b);
+		CBrick* b2 = new CBrick(i * BRICK_WIDTH * 1.0f, BRICK_Y + BRICK_WIDTH);
+		objects.push_back(b2);
 	}
 
-	// Short, low platform
+	// đoạn nhô ra khi mario rớt
 	for (int i = 1; i < 3; i++)
 	{
 		CBrick* b = new CBrick(i * BRICK_WIDTH * 1.0f, BRICK_Y - 44.0f);
 		objects.push_back(b);
 	}
 
-	// Vertical column 1
+	// vị trí các hộp ?
+	for (int i = 1; i < 3; i++)
+	{
+		CBox* b = new CBox(400.0f * i, BRICK_Y - 100.0f);
+		objects.push_back(b);
+	}
+
+	// cột thẳng sát lề trái
 	for (int i = 0; i < 10; i++)
 	{
 		CBrick* b = new CBrick(0, BRICK_Y - i * BRICK_WIDTH);
@@ -426,7 +457,7 @@ void Reload()
 	// Vertical column 2
 	for (int i = 1; i < 3; i++)
 	{
-		CBrick* b = new CBrick(BRICK_X + 300.0f, BRICK_Y - i * BRICK_WIDTH);
+		CBrick* b = new CBrick(BRICK_X + 400.0f, BRICK_Y - i * BRICK_WIDTH);
 		objects.push_back(b);
 	}
 
@@ -445,8 +476,7 @@ void Reload()
 	}
 
 	// Second cloud platform 
-	CPlatform* p = new CPlatform(90.0f, GROUND_Y - 34.0f,
-		16, 15, 16, ID_SPRITE_CLOUD_BEGIN, ID_SPRITE_CLOUD_MIDDLE, ID_SPRITE_CLOUD_END);
+	CPlatform* p = new CPlatform(90.0f, GROUND_Y - 34.0f, 16, 15, 16, ID_SPRITE_CLOUD_BEGIN, ID_SPRITE_CLOUD_MIDDLE, ID_SPRITE_CLOUD_END);
 	objects.push_back(p);
 
 	mario = new CMario(MARIO_START_X, MARIO_START_Y);
@@ -491,10 +521,8 @@ void PurgeDeletedObjects()
 */
 void Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
-	vector<LPGAMEOBJECT> coObjects;
-	list<LPGAMEOBJECT>::iterator i;
+	vector<LPGAMEOBJECT> coObjects; //danh sách các đối tượng phụ cảu obj
+	list<LPGAMEOBJECT>::iterator i; //được sử dụng để duyệt qua danh sách các đối tượng
 	for (i = objects.begin(); i != objects.end(); ++i)
 	{
 		coObjects.push_back(*i);
@@ -505,15 +533,15 @@ void Update(DWORD dt)
 		(*i)->Update(dt,&coObjects);
 	}
 
-	PurgeDeletedObjects();
+	PurgeDeletedObjects(); //loại bỏ các đối tượng đã bị xóa
 
 	// Update camera to follow mario
 	float cx, cy;
 	mario->GetPosition(cx, cy);
 
+	//
 	cx -= SCREEN_WIDTH / 2;
 	cy = 0;
-	//cy -= SCREEN_HEIGHT / 2;
 
 	if (cx < 0) cx = 0;
 
@@ -600,30 +628,30 @@ int Run()
 {
 	MSG msg;
 	int done = 0;
+	//GetTickCount64(): Hàm này trả về số lượng miligiây đã trôi qua từ khi hệ thống bắt đầu
 	ULONGLONG frameStart = GetTickCount64();
+	//tickPerFrame (thời gian mỗi frame cần phải hiển thị)
 	DWORD tickPerFrame = 1000 / MAX_FRAME_RATE;
 
 	while (!done)
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) //kiểm tra sự kiện, nút nhấn
 		{
 			if (msg.message == WM_QUIT) done = 1;
 
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			TranslateMessage(&msg); //chuyển đổi các thông điệp từ hệ thống về dạng phù hợp để xử lý bàn phím.
+			DispatchMessage(&msg); //gửi thông điệp đến cửa sổ điều khiển (window procedure) của cửa sổ được xác định bởi msg.hwnd.
 		}
 
 		ULONGLONG now = GetTickCount64();
 
-		// dt: the time between (beginning of last frame) and now
-		// this frame: the frame we are about to render
 		DWORD dt = (DWORD)(now - frameStart);
 
 		if (dt >= tickPerFrame)
 		{
 			frameStart = now;
 
-			game->ProcessKeyboard();			
+			game->ProcessKeyboard();			 //xử lý các sự kiện từ bàn phím.
 			Update(dt);
 			Render();
 		}
