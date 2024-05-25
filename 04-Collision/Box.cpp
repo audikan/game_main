@@ -22,11 +22,12 @@ void CBox::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (state == BOX_STATE_ACTIVE) {
 		if (!isActivated) {
+			y_temp = y;
 			y -= 5.0f;
 			isActivated = true;
 		}
 		else {
-			if (y < GROUND_Y - 90)
+			if (y_temp > y - 5.0f)
 				y += 1.0f;
 		}
 		return;

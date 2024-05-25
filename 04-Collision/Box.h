@@ -16,14 +16,14 @@
 class CBox : public CGameObject {
 protected:
 	bool isActivated;
-
+	float y_temp;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 public:
-	CBox(float x, float y) : CGameObject(x, y) {
+	CBox(float x, float y) : CGameObject(x, y) {\
 		isActivated = false;
 		SetState(BOX_STATE_UNACTIVE);
 	}
