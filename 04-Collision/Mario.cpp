@@ -3,7 +3,7 @@
 
 #include "Mario.h"
 #include "Game.h"
-
+#include "Box.h"
 #include "Goomba.h"
 #include "Coin.h"
 
@@ -51,8 +51,21 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
 		OnCollisionWithCoin(e);
+	else if (dynamic_cast<CBox*>(e->obj))
+		OnCollisionWithBox(e);
 }
+void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
+{
+	CBox* box = dynamic_cast<CBox*>(e->obj);
 
+	if (e->ny != 0)
+	{
+		if (box->GetState() == BOX_STATE_UNACTIVE)
+		{
+			box->SetState(BOX_STATE_ACTIVE);
+		}
+	}
+}
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);

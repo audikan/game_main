@@ -349,6 +349,9 @@ void LoadAssetsOther()
 	sprites->Add(ID_SPRITE_CLOUD_MIDDLE, 408, 117, 408 + 15, 117 + 15, texMisc);
 	sprites->Add(ID_SPRITE_CLOUD_END, 426, 117, 426 + 15, 117 + 15, texMisc);
 
+	sprites->Add(ID_SPRITE_CLOUD_END, 426, 117, 426 + 15, 117 + 15, texMisc);
+	sprites->Add(ID_SPRITE_CLOUD_END, 426, 117, 426 + 15, 117 + 15, texMisc);
+
 }
 
 void LoadAssetsBox() {
@@ -362,7 +365,7 @@ void LoadAssetsBox() {
 	sprites->Add(ID_SPRITE_BOX + 3, 336, 117, 351, 132, texMisc);
 	sprites->Add(ID_SPRITE_BOX + 4, 354, 117, 369, 132, texMisc);
 
-	//sprites->Add(ID_SPRITE_BOX_TOUCH + 1, 372, 369, 387, 132, texMisc);
+	sprites->Add(ID_SPRITE_BOX_TOUCH + 1, 372, 117, 387, 132, texMisc);
 
 	LPANIMATION ani;
 	ani = new CAnimation(100);
@@ -372,9 +375,9 @@ void LoadAssetsBox() {
 	ani->Add(ID_SPRITE_BOX + 4);
 	animations->Add(ID_ANI_BOX, ani);
 
-	//ani = new CAnimation(100);
-	//ani->Add(ID_SPRITE_BOX_TOUCH + 1);
-	//animations->Add(ID_SPRITE_BOX_TOUCH, ani);
+	ani = new CAnimation(100);
+	ani->Add(ID_SPRITE_BOX_TOUCH + 1);
+	animations->Add(ID_ANI_BOX_ACTIVE, ani);
 }
 
 /*
@@ -443,7 +446,7 @@ void Reload()
 	// vị trí các hộp ?
 	for (int i = 1; i < 3; i++)
 	{
-		CBox* b = new CBox(400.0f * i, BRICK_Y - 100.0f);
+		CBox* b = new CBox(300.0f * i, BRICK_Y - 110.0f);
 		objects.push_back(b);
 	}
 

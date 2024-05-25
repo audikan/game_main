@@ -9,15 +9,25 @@
 #define BOX_BBOX_WIDTH 16
 #define BOX_BBOX_HEIGHT 16
 
-//----------------------
-#define BOX_STATE_TOUCH 700
-#define ID_ANI_BOX_TOUCH 7001
-
+#define BOX_STATE_ACTIVE 700
+#define ID_ANI_BOX_ACTIVE 7001
+#define BOX_STATE_UNACTIVE 800
 
 class CBox : public CGameObject {
+protected:
+	bool isActivated;
+
+	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	virtual void Render();
+
+	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 public:
-	CBox(float x, float y) : CGameObject(x, y) {}
-	void Render();
-	void Update(DWORD dt) {}
-	void GetBoundingBox(float& l, float& t, float& r, float& b);
+	CBox(float x, float y) : CGameObject(x, y) {
+		isActivated = false;
+		SetState(BOX_STATE_UNACTIVE);
+	}
+	virtual void SetState(int state) {
+		CGameObject::SetState(state);
+	};
 };
