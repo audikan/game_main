@@ -31,6 +31,7 @@
 #include "Animation.h"
 #include "Animations.h"
 
+#include "String"
 #include "Mario.h"
 #include "Brick.h"
 #include "Goomba.h"

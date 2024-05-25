@@ -1,0 +1,18 @@
+﻿  Animation.cpp
+  Animations.cpp
+  Brick.cpp
+  Coin.cpp
+  Collision.cpp
+  debug.cpp
+  Game.cpp
+  GameObject.cpp
+  Goomba.cpp
+  main.cpp
+  Mario.cpp
+  Platform.cpp
+  SampleKeyEventHandler.cpp
+  Sprite.cpp
+  Sprites.cpp
+  Textures.cpp
+  Generating Code...
+  04-Collision.vcxproj -> C:\Users\audikan\source\repos\game_main\Debug\04-Collision.exe
