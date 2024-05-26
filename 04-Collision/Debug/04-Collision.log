@@ -1,5 +1,7 @@
 ﻿  Box.cpp
-  Mario.cpp
+  Brick.cpp
   main.cpp
+  Mario.cpp
+C:\Users\audikan\source\repos\game_main\04-Collision\Mario.cpp(39,24): warning C4101: 'coObjects': unreferenced local variable
   Generating Code...
   04-Collision.vcxproj -> C:\Users\audikan\source\repos\game_main\Debug\04-Collision.exe

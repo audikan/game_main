@@ -15,3 +15,15 @@ void CCoin::GetBoundingBox(float& l, float& t, float& r, float& b)
 	r = l + COIN_BBOX_WIDTH;
 	b = t + COIN_BBOX_HEIGHT;
 }
+
+void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isInBox) {
+		if (y < y_temp - 10.0f) {
+			y -= 0.1f;
+		}
+	}
+
+	CGameObject::Update(dt);
+	CCollision::GetInstance()->Process(this, dt, coObjects);
+}

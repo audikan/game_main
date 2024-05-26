@@ -1,5 +1,6 @@
-#include "Box.h"
+﻿#include "Box.h"
 #include "Mario.h"
+#include "Coin.h"
 
 void CBox::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
@@ -9,28 +10,20 @@ void CBox::GetBoundingBox(float& l, float& t, float& r, float& b)
 	b = t + BOX_BBOX_HEIGHT;
 }
 //------------------------
-
 void CBox::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (e->ny != 0)
-	{
-		SetState(BOX_STATE_ACTIVE);
+	CMario* box = dynamic_cast<CMario*>(e->obj);
+	if (e->ny > 0) { // Mario đụng vào từ bên dưới
+		if (state == BOX_STATE_UNACTIVE) {
+			CreateCoin(); // Tạo đồng xu khi hộp được kích hoạt
+		}
 	}
 }
 
 void CBox::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == BOX_STATE_ACTIVE) {
-		if (!isActivated) {
-			y_temp = y;
-			y -= 5.0f;
-			isActivated = true;
-		}
-		else {
-			if (y_temp > y - 5.0f)
-				y += 1.0f;
-		}
-		return;
+	if (y_temp > y) {
+		y += 1.0f;
 	}
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -45,4 +38,9 @@ void CBox::Render()
 	}
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
 	RenderBoundingBox();
+}
+
+void CBox::CreateCoin() {
+	//LPGAMEOBJECT coin = new CCoin(x, y - BOX_BBOX_HEIGHT, true); // Tạo đồng xu tại vị trí của hộp
+	//CGame::GetInstance()->AddObject(coin); // Thêm đồng xu vào game
 }

@@ -17,15 +17,26 @@ class CBox : public CGameObject {
 protected:
 	bool isActivated;
 	float y_temp;
+	int coins;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 public:
-	CBox(float x, float y) : CGameObject(x, y) {\
+	CBox(float x, float y, int m) : CGameObject(x, y) {
+		coins = m;
+		y_temp = y;
 		isActivated = false;
 		SetState(BOX_STATE_UNACTIVE);
+	}
+	virtual void CreateCoin();
+	virtual int getCoins() {
+		return coins;
+	}
+	virtual void updateCoins() {
+		coins--;
+		y -= 5.0f;
 	}
 	virtual void SetState(int state) {
 		CGameObject::SetState(state);

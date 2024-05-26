@@ -36,6 +36,8 @@ void CMario::OnNoCollision(DWORD dt)
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	vector<LPGAMEOBJECT>* coObjects;
+
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
@@ -58,9 +60,15 @@ void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
 {
 	CBox* box = dynamic_cast<CBox*>(e->obj);
 
-	if (e->ny != 0)
+	if (e->ny > 0)
 	{
-		if (box->GetState() == BOX_STATE_UNACTIVE)
+		if (box->getCoins() > 0) {
+			coin++;
+			box->CreateCoin();
+			box->updateCoins();
+		}
+		
+		if (box->GetState() == BOX_STATE_UNACTIVE && box->getCoins() == 0)
 		{
 			box->SetState(BOX_STATE_ACTIVE);
 		}

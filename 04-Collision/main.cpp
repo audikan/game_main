@@ -446,7 +446,7 @@ void Reload()
 	// vị trí các hộp ?
 	for (int i = 1; i < 3; i++)
 	{
-		CBox* b = new CBox(300.0f * i, BRICK_Y - 110.0f);
+		CBox* b = new CBox(300.0f * i, BRICK_Y - 110.0f,2);
 		objects.push_back(b);
 	}
 
