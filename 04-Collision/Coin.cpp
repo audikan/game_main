@@ -19,8 +19,12 @@ void CCoin::GetBoundingBox(float& l, float& t, float& r, float& b)
 void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (isInBox) {
-		if (y < y_temp - 10.0f) {
-			y -= 0.1f;
+		if (y > y_temp - 30.0f) {
+			y -= 4.0f;
+		}
+		else {
+			isDeleted = true;
+			return;
 		}
 	}
 

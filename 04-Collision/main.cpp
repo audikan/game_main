@@ -524,7 +524,7 @@ void PurgeDeletedObjects()
 */
 void Update(DWORD dt)
 {
-	vector<LPGAMEOBJECT> coObjects; //danh sách các đối tượng phụ cảu obj
+	vector<LPGAMEOBJECT> coObjects; //danh sách các đối tượng phụ của obj
 	list<LPGAMEOBJECT>::iterator i; //được sử dụng để duyệt qua danh sách các đối tượng
 	for (i = objects.begin(); i != objects.end(); ++i)
 	{
@@ -677,7 +677,7 @@ int WINAPI WinMain(
 
 	game = CGame::GetInstance();
 	game->Init(hWnd, hInstance);
-
+	game->setListObject(objects);
 	keyHandler = new CSampleKeyHandler();
 	game->InitKeyboard(keyHandler);
 

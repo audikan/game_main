@@ -1,5 +1,6 @@
-#pragma once
-
+﻿#pragma once
+#include "Coin.h"
+#include "Game.h"
 #include "GameObject.h"
 #include "Animation.h"
 #include "Animations.h"
@@ -30,7 +31,11 @@ public:
 		isActivated = false;
 		SetState(BOX_STATE_UNACTIVE);
 	}
-	virtual void CreateCoin();
+	void CreateCoin() {
+		CCoin* c = new CCoin(x, y- BOX_BBOX_WIDTH);
+		c->setInBox();
+		CGame::GetInstance()->AddObject(c);
+	};
 	virtual int getCoins() {
 		return coins;
 	}

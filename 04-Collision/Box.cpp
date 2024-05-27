@@ -39,8 +39,3 @@ void CBox::Render()
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
 	RenderBoundingBox();
 }
-
-void CBox::CreateCoin() {
-	//LPGAMEOBJECT coin = new CCoin(x, y - BOX_BBOX_HEIGHT, true); // Tạo đồng xu tại vị trí của hộp
-	//CGame::GetInstance()->AddObject(coin); // Thêm đồng xu vào game
-}

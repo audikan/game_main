@@ -15,9 +15,12 @@ protected:
 	bool isInBox;
 	float y_temp;
 public:
-	CCoin(float x, float y) : CGameObject(x, y) {}
-	CCoin(float x, float y, bool isInBox) : CGameObject(x, y) {
-		isInBox = isInBox;
+	CCoin(float x, float y) : CGameObject(x, y) {
+		isInBox = false;
+		y_temp = y;
+	}
+	void setInBox() {
+		isInBox = true;
 		y_temp = y;
 	}
 	void Render();
