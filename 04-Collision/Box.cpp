@@ -12,12 +12,6 @@ void CBox::GetBoundingBox(float& l, float& t, float& r, float& b)
 //------------------------
 void CBox::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	CMario* box = dynamic_cast<CMario*>(e->obj);
-	if (e->ny > 0) { // Mario đụng vào từ bên dưới
-		if (state == BOX_STATE_UNACTIVE) {
-			CreateCoin(); // Tạo đồng xu khi hộp được kích hoạt
-		}
-	}
 }
 
 void CBox::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

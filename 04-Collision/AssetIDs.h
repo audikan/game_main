@@ -83,3 +83,5 @@
 //---------- box -------------
 #define ID_SPRITE_BOX 60000
 #define ID_SPRITE_BOX_TOUCH (ID_SPRITE_BOX+1000)
+
+#define ID_SPRITE_MUSHROOM 70000

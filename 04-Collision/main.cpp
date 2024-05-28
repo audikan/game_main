@@ -30,7 +30,7 @@
 #include "Textures.h"
 #include "Animation.h"
 #include "Animations.h"
-
+#include "Mushroom.h"
 #include "String"
 #include "Mario.h"
 #include "Box.h"
@@ -49,8 +49,8 @@
 
 #define BACKGROUND_COLOR D3DXCOLOR(200.0f/255, 200.0f/255, 255.0f/255, 0.0f)
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
+#define SCREEN_WIDTH 420
+#define SCREEN_HEIGHT 270
 
 
 #define TEXTURES_DIR L"textures"
@@ -79,6 +79,22 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+void LoadAssetsMushroom()
+{
+	CTextures* textures = CTextures::GetInstance();
+	CSprites* sprites = CSprites::GetInstance();
+	CAnimations* animations = CAnimations::GetInstance();
+
+	LPTEXTURE texMisc = textures->Get(ID_TEX_MISC);
+
+	sprites->Add(ID_SPRITE_MUSHROOM + 1, 300, 188, 316, 204, texMisc);
+	sprites->Add(ID_SPRITE_MUSHROOM + 2, 318, 188, 334, 204, texMisc);
+
+	LPANIMATION ani = new CAnimation(300);
+	ani->Add(ID_SPRITE_MUSHROOM + 1);
+	ani->Add(ID_SPRITE_MUSHROOM + 2);
+	animations->Add(ID_ANI_MUSHROOM, ani);
+}
 void LoadAssetsMario()
 {
 	CTextures* textures = CTextures::GetInstance();
@@ -306,7 +322,6 @@ void LoadAssetsGoomba()
 	ani = new CAnimation(100);
 	ani->Add(ID_SPRITE_GOOMBA_DIE + 1);
 	animations->Add(ID_ANI_GOOMBA_DIE, ani);
-
 }
 void LoadAssetsBrick()
 {
@@ -351,9 +366,7 @@ void LoadAssetsOther()
 
 	sprites->Add(ID_SPRITE_CLOUD_END, 426, 117, 426 + 15, 117 + 15, texMisc);
 	sprites->Add(ID_SPRITE_CLOUD_END, 426, 117, 426 + 15, 117 + 15, texMisc);
-
 }
-
 void LoadAssetsBox() {
 	CTextures* textures = CTextures::GetInstance();
 	CSprites* sprites = CSprites::GetInstance();
@@ -401,6 +414,7 @@ void LoadResources()
 	LoadAssetsBox();
 	LoadAssetsCoin();
 	LoadAssetsOther();
+	LoadAssetsMushroom();
 }
 
 void ClearScene()
@@ -420,7 +434,7 @@ void ClearScene()
 #define GOOMBA_X 200.0f
 #define COIN_X 100.0f
 
-#define BRICK_Y GROUND_Y + 20.0f
+#define BRICK_Y GROUND_Y + 50.0f
 #define NUM_BRICKS 70
 
 //================================ TẠO CÁC OBJECT  ==============================
@@ -439,17 +453,30 @@ void Reload()
 	// đoạn nhô ra khi mario rớt
 	for (int i = 1; i < 3; i++)
 	{
-		CBrick* b = new CBrick(i * BRICK_WIDTH * 1.0f, BRICK_Y - 44.0f);
+		CBrick* b = new CBrick(i * BRICK_WIDTH * 1.0f, BRICK_Y - 50.0f);
 		objects.push_back(b);
 	}
 
-	// vị trí các hộp ?
-	for (int i = 1; i < 3; i++)
+	// gạch trên tầng mây
+	for (int i = 7; i < 10; i++)
 	{
-		CBox* b = new CBox(300.0f * i, BRICK_Y - 110.0f,2);
+		CBrick* b = new CBrick(i * BRICK_WIDTH, BRICK_Y - 120.0f);
 		objects.push_back(b);
+
+		CBrick* b2 = new CBrick((i+2) * BRICK_WIDTH, BRICK_Y - 170.0f);
+		objects.push_back(b2);
+
+		CBrick* b3 = new CBrick((i + 7) * BRICK_WIDTH, BRICK_Y - 120.0f);
+		objects.push_back(b3);
 	}
 
+	// vị trí các hộp ? chứa coin
+	for (int i = 10; i < 20; i++)
+	{
+		CBox* box = new CBox(BRICK_WIDTH * i, BRICK_Y - 120.0f, (i-5)*2, 1);
+		objects.push_back(box);
+		i += 6;
+	}
 	// cột thẳng sát lề trái
 	for (int i = 0; i < 10; i++)
 	{
@@ -479,7 +506,7 @@ void Reload()
 	}
 
 	// Second cloud platform 
-	CPlatform* p = new CPlatform(90.0f, GROUND_Y - 34.0f, 16, 15, 16, ID_SPRITE_CLOUD_BEGIN, ID_SPRITE_CLOUD_MIDDLE, ID_SPRITE_CLOUD_END);
+	CPlatform* p = new CPlatform(90.0f, GROUND_Y - 20.0f, 16, 15, 16, ID_SPRITE_CLOUD_BEGIN, ID_SPRITE_CLOUD_MIDDLE, ID_SPRITE_CLOUD_END);
 	objects.push_back(p);
 
 	mario = new CMario(MARIO_START_X, MARIO_START_Y);
@@ -490,6 +517,10 @@ void Reload()
 		CGoomba* goomba = new CGoomba(GOOMBA_X + j * 60, GROUND_Y - 120.0f);
 		objects.push_back(goomba);
 	}
+	//=========== MUSHROOM ===========
+
+	CBox* mushroom = new CBox(BRICK_WIDTH *13, GROUND_Y - 120.0f, true);
+	objects.push_back(mushroom);
 
 	// COINS 
 	for (int i = 0; i < 10; i++)

@@ -6,14 +6,19 @@
 #include "Box.h"
 #include "Goomba.h"
 #include "Coin.h"
+#include "Mushroom.h"
 
 #include "Collision.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	//if (this->state == MARIO_STATE_DIE) {
+		//this->Delete();
+		//CMario* newMario = new CMario(20.0f, 10.0f);
+		//CGame::GetInstance()->AddObject(newMario);
+	//}
 	vy += ay * dt;
 	vx += ax * dt;
-
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
 	// reset untouchable timer if untouchable time has passed
@@ -55,6 +60,18 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CBox*>(e->obj))
 		OnCollisionWithBox(e);
+	else if (dynamic_cast<CMushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
+}
+void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+{
+	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
+	if (e != 0)
+	{
+		level = MARIO_LEVEL_BIG;
+		y -= 16.0f;
+		e->obj->Delete();
+	}
 }
 void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
 {
@@ -62,15 +79,22 @@ void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
 
 	if (e->ny > 0)
 	{
-		if (box->getCoins() > 0) {
-			coin++;
-			box->CreateCoin();
-			box->updateCoins();
-		}
-		
-		if (box->GetState() == BOX_STATE_UNACTIVE && box->getCoins() == 0)
-		{
-			box->SetState(BOX_STATE_ACTIVE);
+		int state_box = box->GetState();
+		if (state_box != BOX_STATE_ACTIVE) {
+			if (state_box == BOX_COIN_UNACTIVE) {
+				if (box->getCoins() > 0) {
+					coin++;
+					box->CreateCoin();
+					box->updateCoins();
+				}
+				else {
+					box->SetState(BOX_STATE_ACTIVE);
+				}
+			}
+			else if (state_box = BOX_MUSHROOM_UNACTIVE) {
+				box->CreateMushroom();
+				box->SetState(BOX_STATE_ACTIVE);
+			} 
 		}
 	}
 }
@@ -250,7 +274,7 @@ void CMario::Render()
 
 	animations->Get(aniId)->Render(x, y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 	
 	DebugOutTitle(L"Coins: %d", coin);
 }
@@ -258,7 +282,12 @@ void CMario::Render()
 void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
-	if (this->state == MARIO_STATE_DIE) return; 
+	if (this->state == MARIO_STATE_DIE) {
+		this->state = MARIO_STATE_IDLE;
+		x = 20.0f;
+		y = 10.0f;
+		return;
+	};
 
 	switch (state)
 	{
