@@ -166,6 +166,8 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Textures.cpp" />
+    <ClCompile Include="Turtle.cpp" />
+    <ClCompile Include="Turtle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

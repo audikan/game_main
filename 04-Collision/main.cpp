@@ -24,6 +24,7 @@
 #include <d3dx10.h>
 #include <list>
 
+#include "Turtle.h"
 #include "debug.h"
 #include "Game.h"
 #include "GameObject.h"
@@ -57,6 +58,7 @@
 #define TEXTURE_PATH_MARIO TEXTURES_DIR "\\mario_transparent.png"
 #define TEXTURE_PATH_MISC TEXTURES_DIR "\\misc_transparent.png"
 #define TEXTURE_PATH_ENEMY TEXTURES_DIR "\\enemies_transparent.png"
+#define TEXTURE_PATH_ENEMY_2 TEXTURES_DIR "\\enemies_transparent_2.png"
 #define TEXTURE_PATH_BBOX TEXTURES_DIR "\\bbox.png"
 
 CGame *game;
@@ -323,6 +325,43 @@ void LoadAssetsGoomba()
 	ani->Add(ID_SPRITE_GOOMBA_DIE + 1);
 	animations->Add(ID_ANI_GOOMBA_DIE, ani);
 }
+
+void LoadAssetsTurtle()
+{
+	CTextures* textures = CTextures::GetInstance();
+	CSprites* sprites = CSprites::GetInstance();
+	CAnimations* animations = CAnimations::GetInstance();
+
+	LPTEXTURE texEnemy = textures->Get(ID_TEX_ENEMY);
+	LPTEXTURE texEnemy2 = textures->Get(ID_TEX_ENEMY_2);
+
+	//WALKING LEFT
+	sprites->Add(ID_SPRITE_TURTLE_WALK_LEFT + 1, 6, 130, 22, 156, texEnemy);
+	sprites->Add(ID_SPRITE_TURTLE_WALK_LEFT + 2, 28, 129, 44, 156, texEnemy);
+	LPANIMATION ani = new CAnimation(100);
+	ani->Add(ID_SPRITE_TURTLE_WALK_LEFT + 1);
+	ani->Add(ID_SPRITE_TURTLE_WALK_LEFT + 2);
+	animations->Add(ID_ANI_TURTLE_WALKING_LEFT, ani);
+
+	//WALKING RIGHT
+	sprites->Add(ID_SPRITE_TURTLE_WALK_RIGHT + 1, 458, 130, 474, 156, texEnemy2);
+	sprites->Add(ID_SPRITE_TURTLE_WALK_RIGHT + 2, 436, 129, 452, 156, texEnemy2);
+	ani = new CAnimation(100);
+	ani->Add(ID_SPRITE_TURTLE_WALK_RIGHT + 1);
+	ani->Add(ID_SPRITE_TURTLE_WALK_RIGHT + 2);
+	animations->Add(ID_ANI_TURTLE_WALKING_RIGHT, ani);
+
+	//DIE
+	sprites->Add(ID_SPRITE_TURTLE_DIE + 1, 71, 139, 89, 155, texEnemy);
+	ani = new CAnimation(100);
+	ani->Add(ID_SPRITE_TURTLE_DIE + 1);
+	animations->Add(ID_ANI_TURTLE_DIE, ani);
+	//SPIN
+	sprites->Add(ID_SPRITE_TURTLE_SPIN + 1, 50, 139, 66, 155, texEnemy);
+	ani = new CAnimation(100);
+	ani->Add(ID_SPRITE_TURTLE_SPIN + 1);
+	animations->Add(ID_ANI_TURTLE_SPIN, ani);
+}
 void LoadAssetsBrick()
 {
 	CTextures* textures = CTextures::GetInstance();
@@ -405,6 +444,7 @@ void LoadResources()
 
 	textures->Add(ID_TEX_MARIO, TEXTURE_PATH_MARIO);
 	textures->Add(ID_TEX_ENEMY, TEXTURE_PATH_ENEMY);
+	textures->Add(ID_TEX_ENEMY_2, TEXTURE_PATH_ENEMY_2);
 	textures->Add(ID_TEX_MISC, TEXTURE_PATH_MISC);
 	textures->Add(ID_TEX_BBOX, TEXTURE_PATH_BBOX);
 
@@ -415,6 +455,7 @@ void LoadResources()
 	LoadAssetsCoin();
 	LoadAssetsOther();
 	LoadAssetsMushroom();
+	LoadAssetsTurtle();
 }
 
 void ClearScene()
@@ -457,6 +498,12 @@ void Reload()
 		objects.push_back(b);
 	}
 
+	// Columns 2
+	for (int i = 1; i < 3; i++)
+	{
+		CBrick* b = new CBrick(30 * BRICK_WIDTH * 1.0f, BRICK_Y-BRICK_WIDTH*i);
+		objects.push_back(b);
+	}
 	// gạch trên tầng mây
 	for (int i = 7; i < 10; i++)
 	{
@@ -478,32 +525,12 @@ void Reload()
 		i += 6;
 	}
 	// cột thẳng sát lề trái
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 18; i++)
 	{
 		CBrick* b = new CBrick(0, BRICK_Y - i * BRICK_WIDTH);
 		objects.push_back(b);
 	}
 
-	// Vertical column 2
-	for (int i = 1; i < 3; i++)
-	{
-		CBrick* b = new CBrick(BRICK_X + 400.0f, BRICK_Y - i * BRICK_WIDTH);
-		objects.push_back(b);
-	}
-
-	// Vertical column 3
-	for (int i = 1; i < 4; i++)
-	{
-		CBrick* b = new CBrick(BRICK_X + 400.0f, BRICK_Y - i * BRICK_WIDTH);
-		objects.push_back(b);
-	}
-
-	// Vertical column 4
-	for (int i = 1; i < 5; i++)
-	{
-		CBrick* b = new CBrick(BRICK_X + 500.0f, BRICK_Y - i * BRICK_WIDTH);
-		objects.push_back(b);
-	}
 
 	// Second cloud platform 
 	CPlatform* p = new CPlatform(90.0f, GROUND_Y - 20.0f, 16, 15, 16, ID_SPRITE_CLOUD_BEGIN, ID_SPRITE_CLOUD_MIDDLE, ID_SPRITE_CLOUD_END);
@@ -516,6 +543,12 @@ void Reload()
 	{
 		CGoomba* goomba = new CGoomba(GOOMBA_X + j * 60, GROUND_Y - 120.0f);
 		objects.push_back(goomba);
+	}
+
+	for (int j = 0; j < 1; j++)
+	{
+		CTurtle* turtle = new CTurtle(GOOMBA_X + j * 60, BRICK_Y - 56.0f);
+		objects.push_back(turtle);
 	}
 	//=========== MUSHROOM ===========
 
@@ -679,7 +712,7 @@ int Run()
 
 		ULONGLONG now = GetTickCount64();
 
-		DWORD dt = (DWORD)(now - frameStart);
+		DWORD dt = (DWORD)((now - frameStart));
 
 		if (dt >= tickPerFrame)
 		{

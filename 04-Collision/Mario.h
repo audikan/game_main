@@ -119,6 +119,7 @@ class CMario : public CGameObject
 	void OnCollisionWithBox(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithBTurtle(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -140,7 +141,6 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);
-
 	int IsCollidable()
 	{ 
 		return (state != MARIO_STATE_DIE); 

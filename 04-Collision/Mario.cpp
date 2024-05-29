@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Box.h"
 #include "Goomba.h"
+#include "Turtle.h"
 #include "Coin.h"
 #include "Mushroom.h"
 
@@ -41,8 +42,6 @@ void CMario::OnNoCollision(DWORD dt)
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	vector<LPGAMEOBJECT>* coObjects;
-
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
@@ -62,6 +61,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBox(e);
 	else if (dynamic_cast<CMushroom*>(e->obj))
 		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<CTurtle*>(e->obj))
+		OnCollisionWithBTurtle(e);
 }
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
@@ -73,6 +74,33 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		e->obj->Delete();
 	}
 }
+void CMario::OnCollisionWithBTurtle(LPCOLLISIONEVENT e) {
+	CTurtle* turtle = dynamic_cast<CTurtle*>(e->obj);
+
+	if (e->ny < 0 && turtle->GetState() != TURTLE_STATE_DIE && turtle->GetState() != TURTLE_STATE_SPIN_LEFT && turtle->GetState() != TURTLE_STATE_SPIN_RIGHT) {
+		turtle->SetState(TURTLE_STATE_DIE);
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
+		y -= 8.0f;
+	}
+	else if (e->nx != 0) {
+		if (turtle->GetState() == TURTLE_STATE_DIE) {
+			if (e->nx > 0)
+				turtle->SetState(TURTLE_STATE_SPIN_LEFT);
+			else if (e->nx < 0)
+				turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
+		}
+		else if (turtle->GetState() != TURTLE_STATE_DIE) {
+			if (level > MARIO_LEVEL_SMALL) {
+				level = MARIO_LEVEL_SMALL;
+				StartUntouchable();
+			}
+			else {
+				SetState(MARIO_STATE_DIE);
+			}
+		}
+	}
+}
+
 void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
 {
 	CBox* box = dynamic_cast<CBox*>(e->obj);
@@ -299,6 +327,7 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
 		if (isSitting) break;
+		if (x < 10.0f) break;
 		maxVx = -MARIO_RUNNING_SPEED;
 		ax = -MARIO_ACCEL_RUN_X;
 		nx = -1;
