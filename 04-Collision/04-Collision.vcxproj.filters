@@ -75,6 +75,9 @@
     <ClInclude Include="Mushroom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Flower.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug.cpp">
@@ -135,6 +138,15 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Turtle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Flower.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

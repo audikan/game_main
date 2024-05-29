@@ -39,6 +39,7 @@
 #include "Goomba.h"
 #include "Coin.h"
 #include "Platform.h"
+#include "Pipeline.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -80,7 +81,20 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
+void LoadAssetsPipeline()
+{
+	CTextures* textures = CTextures::GetInstance();
+	CSprites* sprites = CSprites::GetInstance();
+	CAnimations* animations = CAnimations::GetInstance();
 
+	LPTEXTURE texEnemy = textures->Get(ID_TEX_ENEMY);
+
+	sprites->Add(ID_SPRITE_PIPELINE + 1, 98, 87, 130, 119, texEnemy);
+
+	LPANIMATION ani = new CAnimation(100);
+	ani->Add(ID_SPRITE_PIPELINE + 1);
+	animations->Add(ID_ANI_PIPELINE, ani);
+}
 void LoadAssetsMushroom()
 {
 	CTextures* textures = CTextures::GetInstance();
@@ -456,6 +470,7 @@ void LoadResources()
 	LoadAssetsOther();
 	LoadAssetsMushroom();
 	LoadAssetsTurtle();
+	LoadAssetsPipeline();
 }
 
 void ClearScene()
@@ -503,6 +518,11 @@ void Reload()
 	{
 		CBrick* b = new CBrick(30 * BRICK_WIDTH * 1.0f, BRICK_Y-BRICK_WIDTH*i);
 		objects.push_back(b);
+	}
+	for (int i = 1; i < 2; i++)
+	{
+		CPipeline* p = new CPipeline(31 * BRICK_WIDTH+ BRICK_WIDTH/2, BRICK_Y - BRICK_WIDTH * 1.5);
+		objects.push_back(p);
 	}
 	// gạch trên tầng mây
 	for (int i = 7; i < 10; i++)
