@@ -8,6 +8,7 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
+#include "Background.h"
 #include "Platform.h"
 
 #include "SampleKeyEventHandler.h"
@@ -147,6 +148,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPortal(x, y, r, b, scene_id);
 	}
 	break;
+	case OBJECT_TYPE_BACKGROUND:
+	{
+		int id = atoi(tokens[3].c_str());
+		obj = new Background(id, x, y);
+	}
+	break;
 
 
 	default:
@@ -156,7 +163,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	// General object setup
 	obj->SetPosition(x, y);
-
 
 	objects.push_back(obj);
 }

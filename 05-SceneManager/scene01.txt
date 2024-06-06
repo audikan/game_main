@@ -12,7 +12,7 @@ cloud.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0	20	10
+0	100	10
 
 # BRICKS
 1	0	148
