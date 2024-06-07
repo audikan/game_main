@@ -7,6 +7,7 @@
 
 #include "Goomba.h"
 #include "Coin.h"
+#include "Mushroom.h"
 #include "Portal.h"
 #include "PlayScene.h"
 #include "Collision.h"
@@ -57,6 +58,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBox(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<CMushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -105,6 +108,17 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
 }
 
+void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+{
+	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
+	if (e != 0)
+	{
+		level = MARIO_LEVEL_BIG;
+		y -= 16.0f;
+		e->obj->Delete();
+	}
+}
+
 void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
 {
 	CBox* box = dynamic_cast<CBox*>(e->obj);
@@ -112,6 +126,7 @@ void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
 	{
 		int state_box = box->GetState();
 		if (state_box != STATE_BOX_ACTIVE) {
+			if (box->getType() == 1) {
 				if (box->getCoins() > 0) {
 					coin++;
 					box->createCoin();
@@ -119,6 +134,10 @@ void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
 
 					if (box->getCoins() == 0) box->SetState(STATE_BOX_ACTIVE);
 				}
+			}if (box->getType() == 2) {
+				box->createMushroom();
+				box->SetState(STATE_BOX_ACTIVE);
+			}
 		}
 	}
 }

@@ -15,25 +15,32 @@
 class CBox : public CGameObject {
 protected:
 	int coins;
+	int type; // 1 = coin, 2 = mushroom
 	float y_temp;
 public:
 	CBox(float x, float y) : CGameObject(x, y) {
 		y_temp = y;
 		SetState(STATE_BOX_UNACTIVE);
+		type = 2;
 	}
 	CBox(float x, float y, int num_coins) : CGameObject(x, y) {
 		coins = num_coins;
 		y_temp = y;
 		SetState(STATE_BOX_UNACTIVE);
+		type = 1;
 	}
 	virtual int getCoins() {
 		return coins;
+	}
+	virtual int getType() {
+		return type;
 	}
 	virtual void updateCoins() {
 		coins--;
 		y -= 5.0f;
 	}
 	void createCoin();
+	void createMushroom();
 	void Render();
 	virtual void SetState(int state) {
 		CGameObject::SetState(state);

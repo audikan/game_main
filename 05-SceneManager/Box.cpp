@@ -1,5 +1,6 @@
 #include "Box.h"
 #include "Coin.h"
+#include "Mushroom.h"
 #include "PlayScene.h"
 
 void CBox::Render()
@@ -25,6 +26,14 @@ void CBox::createCoin() {
 	CPlayScene* playScene = dynamic_cast<CPlayScene*>(a);
 
 	CCoin *c = new CCoin(x, y, 1);
+	playScene->addObj(c);
+}
+void CBox::createMushroom() {
+	LPSCENE a = CGame::GetInstance()->GetCurrentScene();
+	CPlayScene* playScene = dynamic_cast<CPlayScene*>(a);
+
+	CMushroom* c = new CMushroom(x, y);
+	c->setInBox();
 	playScene->addObj(c);
 }
 
