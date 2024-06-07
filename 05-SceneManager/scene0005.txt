@@ -5,6 +5,7 @@ coin.txt
 cloud.txt
 brick.txt
 background.txt
+box.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -52,6 +53,9 @@ background.txt
 6	235	55	60023
 # MARIO
 0	120	10
+
+#BOX
+7	400	180	5
 
 #COIN
 4	100	120

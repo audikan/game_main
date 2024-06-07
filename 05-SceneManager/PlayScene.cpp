@@ -4,6 +4,7 @@
 
 #include "PlayScene.h"
 #include "Utils.h"
+#include "Box.h"
 #include "Textures.h"
 #include "Sprites.h"
 #include "Portal.h"
@@ -154,7 +155,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Background(id, x, y);
 	}
 	break;
-
+	case OBJECT_TYPE_BOX:
+	{
+		int num_coins = atoi(tokens[3].c_str());
+		obj = new CBox(x, y, num_coins);
+	}
+	break;
 
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);

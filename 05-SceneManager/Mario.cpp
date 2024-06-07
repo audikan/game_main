@@ -3,11 +3,12 @@
 
 #include "Mario.h"
 #include "Game.h"
+#include "Box.h"
 
 #include "Goomba.h"
 #include "Coin.h"
 #include "Portal.h"
-
+#include "PlayScene.h"
 #include "Collision.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -52,6 +53,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
 		OnCollisionWithCoin(e);
+	else if (dynamic_cast<CBox*>(e->obj))
+		OnCollisionWithBox(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
 }
@@ -102,6 +105,23 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
 }
 
+void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
+{
+	CBox* box = dynamic_cast<CBox*>(e->obj);
+	if (e->ny > 0)
+	{
+		int state_box = box->GetState();
+		if (state_box != STATE_BOX_ACTIVE) {
+				if (box->getCoins() > 0) {
+					coin++;
+					box->createCoin();
+					box->updateCoins();
+
+					if (box->getCoins() == 0) box->SetState(STATE_BOX_ACTIVE);
+				}
+		}
+	}
+}
 //
 // Get animation ID for small Mario
 //
