@@ -1,13 +1,14 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include "AssetIDs.h"
-
+#include "retangle.h"
 #include "PlayScene.h"
 #include "Utils.h"
 #include "Box.h"
 #include "Textures.h"
 #include "Sprites.h"
 #include "Portal.h"
+#include "ObjBlock.h"
 #include "Coin.h"
 #include "Background.h"
 #include "Platform.h"
@@ -132,14 +133,53 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int sprite_middle = atoi(tokens[7].c_str());
 		int sprite_end = atoi(tokens[8].c_str());
 
+		int block = atoi(tokens[9].c_str());
 		obj = new CPlatform(
 			x, y,
 			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end
+			sprite_begin, sprite_middle, sprite_end, block
 		);
 
 		break;
 	}
+
+	case OBJECT_TYPE_RETANGLE:
+	{
+
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int height = atoi(tokens[6].c_str());
+		int sprite_1 = atoi(tokens[7].c_str());
+		int sprite_2 = atoi(tokens[8].c_str());
+		int sprite_3 = atoi(tokens[9].c_str());
+		int sprite_4 = atoi(tokens[10].c_str());
+		int sprite_5 = atoi(tokens[11].c_str());
+		int sprite_6 = atoi(tokens[12].c_str());
+		int sprite_7 = atoi(tokens[13].c_str());
+		int sprite_8 = atoi(tokens[14].c_str());
+		int sprite_9 = atoi(tokens[15].c_str());
+
+		//che mắt
+		obj = new CPlatform(
+			x, y-14.0f,
+			cell_width, cell_height, length,
+			sprite_1, sprite_2, sprite_3, 1
+		);
+		obj->SetPosition(x, y);
+		objects.push_back(obj);
+
+		// thực tế hiển thị
+
+		obj = new CRetangle(
+			x, y,
+			cell_width, cell_height, length, height,
+			sprite_1, sprite_2, sprite_3, sprite_4, sprite_5, sprite_6, sprite_7, sprite_8, sprite_9
+		);
+
+		break;
+	}
+
 
 	case OBJECT_TYPE_PORTAL:
 	{
@@ -155,13 +195,25 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Background(id, x, y);
 	}
 	break;
-	case OBJECT_TYPE_BOX:
+	case OBJECT_TYPE_BOX_COIN:
 	{
 		int num_coins = atoi(tokens[3].c_str());
 		obj = new CBox(x, y, num_coins);
 	}
 	break;
-
+	case OBJECT_TYPE_BOX_MUSHROOM:
+	{
+		obj = new CBox(x, y);
+	}
+	break;
+	//=================================== Sửa_ing ===============================
+	case OBJECT_TYPE_ISBLOCK:
+	{
+		int id = atoi(tokens[3].c_str());
+		obj = new CObjBlock(x, y, id);
+	}
+	break;
+	//===========================================================================
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;

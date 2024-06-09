@@ -10,6 +10,7 @@
 #include "Mushroom.h"
 #include "Portal.h"
 #include "PlayScene.h"
+#include "retangle.h"
 #include "Collision.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -44,6 +45,12 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		vy = 0;
 		if (e->ny < 0) isOnPlatform = true;
 	}
+	else
+		if (e->ny != 0 && e->obj->IsBlockingAbove())
+		{
+			vy = 0;
+			if (e->ny < 0) isOnPlatform = true;
+		}
 	else 
 	if (e->nx != 0 && e->obj->IsBlocking())
 	{
@@ -116,6 +123,13 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		level = MARIO_LEVEL_BIG;
 		y -= 16.0f;
 		e->obj->Delete();
+	}
+}
+void CMario::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
+{
+	if (e->ny < 0) {
+		vy = 0;
+	this->isOnPlatform = true;
 	}
 }
 
