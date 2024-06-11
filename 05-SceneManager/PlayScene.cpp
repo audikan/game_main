@@ -1,9 +1,9 @@
 ﻿#include <iostream>
 #include <fstream>
 #include "AssetIDs.h"
-#include "retangle.h"
 #include "PlayScene.h"
 #include "Utils.h"
+#include "Retangle.h"
 #include "Box.h"
 #include "Textures.h"
 #include "Sprites.h"
@@ -12,6 +12,7 @@
 #include "Coin.h"
 #include "Background.h"
 #include "Platform.h"
+#include "Bullet.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -122,6 +123,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
+	case OBJECT_TYPE_BULLET: obj = new CBullet(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
 	{
@@ -175,7 +177,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			x, y,
 			cell_width, cell_height, length, height,
 			sprite_1, sprite_2, sprite_3, sprite_4, sprite_5, sprite_6, sprite_7, sprite_8, sprite_9
-		);
+	);
 
 		break;
 	}

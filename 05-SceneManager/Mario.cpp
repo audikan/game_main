@@ -4,6 +4,7 @@
 #include "Mario.h"
 #include "Game.h"
 #include "Box.h"
+#include "Bullet.h"
 
 #include "Goomba.h"
 #include "Coin.h"
@@ -67,6 +68,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<CMushroom*>(e->obj))
 		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<CBullet*>(e->obj))
+		OnCollisionWithBullet(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -107,6 +110,27 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
 	coin++;
+}
+
+void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e)
+{
+	e->obj->Delete();
+
+	if (untouchable == 0)
+	{
+		
+			if (level > MARIO_LEVEL_SMALL)
+			{
+				level = MARIO_LEVEL_SMALL;
+				StartUntouchable();
+			}
+			else
+			{
+				DebugOut(L">>> Mario DIE >>> \n");
+				SetState(MARIO_STATE_DIE);
+			}
+		
+	}
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)

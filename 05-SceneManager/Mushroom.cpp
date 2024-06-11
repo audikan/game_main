@@ -35,7 +35,7 @@ void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 }
 
-void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects){
+void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 	if (inBox) {
 		if (y > y_temp - 18.0f) {
 			y -= 1.0f;

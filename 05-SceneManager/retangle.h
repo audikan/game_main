@@ -15,8 +15,8 @@ protected:
 public:
 	CRetangle(float x, float y,
 		float cell_width, float cell_height, int length, int height,
-		int sprite_id_1, int sprite_id_2, int sprite_id_3, 
-		int sprite_id_4, int sprite_id_5, int sprite_id_6, 
+		int sprite_id_1, int sprite_id_2, int sprite_id_3,
+		int sprite_id_4, int sprite_id_5, int sprite_id_6,
 		int sprite_id_7, int sprite_id_8, int sprite_id_9) : CGameObject(x, y) {
 		this->length = length;
 		this->cellWidth = cell_width;
