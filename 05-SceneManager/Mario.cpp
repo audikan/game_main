@@ -47,12 +47,6 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		vy = 0;
 		if (e->ny < 0) isOnPlatform = true;
 	}
-	else
-		if (e->ny != 0 && e->obj->IsBlockingAbove())
-		{
-			vy = 0;
-			if (e->ny < 0) isOnPlatform = true;
-		}
 	else 
 	if (e->nx != 0 && e->obj->IsBlocking())
 	{

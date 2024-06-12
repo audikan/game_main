@@ -162,15 +162,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int sprite_8 = atoi(tokens[14].c_str());
 		int sprite_9 = atoi(tokens[15].c_str());
 
-		//che mắt
-		obj = new CPlatform(
-			x, y-14.0f,
-			cell_width, cell_height, length,
-			sprite_1, sprite_2, sprite_3, 1
-		);
-		obj->SetPosition(x, y);
-		objects.push_back(obj);
-
 		// thực tế hiển thị
 
 		obj = new CRetangle(

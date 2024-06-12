@@ -1,8 +1,12 @@
 #include "Collision.h"
 #include "GameObject.h"
-
 #include "debug.h"
 
+
+int CCollisionEvent::WasCollided() {
+	return
+		t >= 0.0f && t <= 1.0f && obj->IsDirectionColliable(nx, ny) == 1;
+}
 #define BLOCK_PUSH_FACTOR 0.4f
 
 CCollision* CCollision::__instance = NULL;
@@ -346,7 +350,6 @@ void CCollision::Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* co
 		LPCOLLISIONEVENT e = coEvents[i];
 		if (e->isDeleted) continue;
 		if (e->obj->IsBlocking()) continue;  // blocking collisions were handled already, skip them
-		if (e->obj->IsBlockingAbove()) continue;
 		objSrc->OnCollisionWith(e);			
 	}
 

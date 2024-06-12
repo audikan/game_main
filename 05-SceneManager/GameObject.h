@@ -28,7 +28,7 @@ protected:
 
 	int state;
 
-	bool isDeleted; 
+	bool isDeleted, isDirectionColliable;
 
 public: 
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
@@ -64,8 +64,7 @@ public:
 	
 	// Is this object blocking other object? If YES, collision framework will automatically push the other object
 	virtual int IsBlocking() { return 1; }
-	virtual int IsBlockingAbove() { return 0; }
 	~CGameObject();
-
+	virtual int IsDirectionColliable(float nx, float ny) { return 1; }
 	static bool IsDeleted(const LPGAMEOBJECT &o) { return o->isDeleted; }
 };
