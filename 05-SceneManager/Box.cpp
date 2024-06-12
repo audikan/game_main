@@ -11,7 +11,7 @@ void CBox::Render()
 		aniId = ID_ANI_BOX;
 	}
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CBox::GetBoundingBox(float& l, float& t, float& r, float& b)

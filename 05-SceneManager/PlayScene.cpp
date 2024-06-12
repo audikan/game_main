@@ -14,6 +14,7 @@
 #include "Platform.h"
 #include "Bullet.h"
 #include "Flower.h"
+#include "Turtle.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -199,14 +200,19 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBox(x, y);
 	}
 	break;
-	//=================================== Sửa_ing ===============================
+
+	case OBJECT_TYPE_TURTLE:
+	{
+		float dis = atoi(tokens[3].c_str());
+		obj = new CTurtle(x, y, dis);
+	}
+	break;
 	case OBJECT_TYPE_ISBLOCK:
 	{
 		int id = atoi(tokens[3].c_str());
 		obj = new CObjBlock(x, y, id);
 	}
 	break;
-	//===========================================================================
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;

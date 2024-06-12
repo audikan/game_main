@@ -14,6 +14,7 @@
 #include "Retangle.h"
 #include "Collision.h"
 #include "Flower.h"
+#include "Turtle.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -67,6 +68,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBullet(e);
 	else if (dynamic_cast<CFlower*>(e->obj))
 		OnCollisionWithFlower(e);
+	else if (dynamic_cast<CTurtle*>(e->obj))
+		OnCollisionWithTurtle(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -98,6 +101,53 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 					DebugOut(L">>> Mario DIE >>> \n");
 					SetState(MARIO_STATE_DIE);
 				}
+			}
+		}
+	}
+}
+
+void CMario::OnCollisionWithTurtle(LPCOLLISIONEVENT e)
+{
+	CTurtle* turtle = dynamic_cast<CTurtle*>(e->obj);
+
+	if (e->ny < 0)
+	{
+		if (turtle->GetState() == TURTLE_STATE_DIE) {
+			float x_turtle;
+			x_turtle = turtle->get_x();
+			if (x > x_turtle) turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
+			if (x < x_turtle) turtle->SetState(TURTLE_STATE_SPIN_LEFT);
+
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else if (turtle->GetState() == TURTLE_STATE_WALK_LEFT || turtle->GetState() == TURTLE_STATE_WALK_RIGHT)
+		{
+			turtle->SetState(TURTLE_STATE_DIE);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else if (turtle->GetState() == TURTLE_STATE_SPIN_LEFT || turtle->GetState() == TURTLE_STATE_SPIN_RIGHT) {
+			turtle->tang_y();
+			turtle->SetState(TURTLE_STATE_DIE);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
+	if (turtle->GetState() == TURTLE_STATE_DIE) {
+		if (e->nx > 0) turtle->SetState(TURTLE_STATE_SPIN_LEFT);
+		if (e->nx < 0) turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
+	}
+	if (e->nx !=0 && turtle->GetState()!= TURTLE_STATE_DIE)
+	{
+		if (untouchable == 0)
+		{
+			if (level > MARIO_LEVEL_SMALL)
+			{
+				level = MARIO_LEVEL_SMALL;
+				StartUntouchable();
+			}
+			else
+			{
+				DebugOut(L">>> Mario DIE >>> \n");
+				SetState(MARIO_STATE_DIE);
 			}
 		}
 	}
