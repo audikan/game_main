@@ -15,8 +15,9 @@ void CBullet::Render()
 }
 void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	x -= BULLET_SPEED*dt;
-	y += BULLET_SPEED*dt;
+	x += vx * dt;
+	y += vy * dt;
+
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }

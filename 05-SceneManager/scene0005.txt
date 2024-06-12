@@ -8,6 +8,7 @@ background.txt
 goomba.txt
 box.txt
 bullet.txt
+enemes.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -113,6 +114,8 @@ bullet.txt
 9	500	195	15	15	5	4	60051	60052	60053	60054	60055	60056	60057	60058	60059
 9	590	210	15	15	6	3	60051	60052	60053	60054	60055	60056	60057	60058	60059
 
+#Flower
+12	445	200
 #PIPELINE
 10	430	195	60101
 10	445	195	60102
@@ -127,10 +130,6 @@ bullet.txt
 #GOOMBA
 2	320	200
 2	570	200
-
-#BULLET
-11	320	100
-
 
 # MARIO
 0	120	10

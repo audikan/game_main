@@ -13,6 +13,7 @@
 #include "Background.h"
 #include "Platform.h"
 #include "Bullet.h"
+#include "Flower.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -123,8 +124,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
-	case OBJECT_TYPE_BULLET: obj = new CBullet(x, y); break;
-
+	case OBJECT_TYPE_FLOWER: obj = new CFlower(x, y); break;
 	case OBJECT_TYPE_PLATFORM:
 	{
 

@@ -11,8 +11,9 @@
 #include "Mushroom.h"
 #include "Portal.h"
 #include "PlayScene.h"
-#include "retangle.h"
+#include "Retangle.h"
 #include "Collision.h"
+#include "Flower.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -70,6 +71,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushroom(e);
 	else if (dynamic_cast<CBullet*>(e->obj))
 		OnCollisionWithBullet(e);
+	else if (dynamic_cast<CFlower*>(e->obj))
+		OnCollisionWithFlower(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -104,6 +107,24 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 			}
 		}
 	}
+}
+
+void CMario::OnCollisionWithFlower(LPCOLLISIONEVENT e)
+{
+		if (untouchable == 0)
+		{
+				if (level > MARIO_LEVEL_SMALL)
+				{
+					level = MARIO_LEVEL_SMALL;
+					vy = -MARIO_JUMP_DEFLECT_SPEED;
+					StartUntouchable();
+				}
+				else
+				{
+					DebugOut(L">>> Mario DIE >>> \n");
+					SetState(MARIO_STATE_DIE);
+				}
+		}
 }
 
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
