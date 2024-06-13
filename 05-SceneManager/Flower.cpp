@@ -61,10 +61,12 @@ void CFlower::fireMario() {
 	float angle = atan2(y_dis, x_dis);
 
 	// Tạo viên đạn và bắn
-	LPSCENE a = CGame::GetInstance()->GetCurrentScene();
-	CPlayScene* playScene = dynamic_cast<CPlayScene*>(a);
-	CBullet* c = new CBullet(x - 3.0f, y, angle);
-	playScene->addObj(c);
+	if (x_dis < 240.0f) {
+		LPSCENE a = CGame::GetInstance()->GetCurrentScene();
+		CPlayScene* playScene = dynamic_cast<CPlayScene*>(a);
+		CBullet* c = new CBullet(x - 3.0f, y, angle);
+		playScene->addObj(c);
+	}
 }
 
 
