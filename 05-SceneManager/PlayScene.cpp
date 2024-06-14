@@ -15,7 +15,7 @@
 #include "Bullet.h"
 #include "Flower.h"
 #include "Turtle.h"
-
+#include "BlackBox.h"
 #include "SampleKeyEventHandler.h"
 
 using namespace std;
@@ -210,9 +210,22 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_ISBLOCK:
 	{
 		int id = atoi(tokens[3].c_str());
-		obj = new CObjBlock(x, y, id);
+		if (tokens.size() > 4) {
+			int width = atoi(tokens[4].c_str());
+			obj = new CObjBlock(x, y, id, width);
+		}
+		else {
+			obj = new CObjBlock(x, y, id);
+		}
 	}
 	break;
+
+	case OBJECT_TYPE_BLACK_BOX:
+	{
+		obj = new CBlackBox(x, y);
+	}
+	break;
+
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;

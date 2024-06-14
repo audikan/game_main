@@ -15,6 +15,7 @@
 #include "Collision.h"
 #include "Flower.h"
 #include "Turtle.h"
+#include "BlackBox.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -70,6 +71,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithFlower(e);
 	else if (dynamic_cast<CTurtle*>(e->obj))
 		OnCollisionWithTurtle(e);
+	else if (dynamic_cast<CBlackBox*>(e->obj))
+		OnCollisionWithBlackBox(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -115,8 +118,8 @@ void CMario::OnCollisionWithTurtle(LPCOLLISIONEVENT e)
 		if (turtle->GetState() == TURTLE_STATE_DIE) {
 			float x_turtle;
 			x_turtle = turtle->get_x();
-			if (x > x_turtle) turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
-			if (x < x_turtle) turtle->SetState(TURTLE_STATE_SPIN_LEFT);
+			if (x < x_turtle) turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
+			if (x > x_turtle) turtle->SetState(TURTLE_STATE_SPIN_LEFT);
 
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
@@ -214,6 +217,16 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		e->obj->Delete();
 	}
 }
+
+void CMario::OnCollisionWithBlackBox(LPCOLLISIONEVENT e)
+{
+	CBlackBox* bb = dynamic_cast<CBlackBox*>(e->obj);
+	if (bb->GetState() != STATE_BLACK_BOX_ACTIVE) {
+		bb->createInBox(bb->GetState());
+		bb->SetState(STATE_BLACK_BOX_ACTIVE);
+	}
+}
+
 void CMario::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
 {
 	if (e->ny < 0) {

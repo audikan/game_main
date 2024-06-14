@@ -8,6 +8,7 @@
 #define ID_TEX_ENEMY 10
 #define ID_TEX_MISC 20
 #define ID_TEX_BACKGROUND 30
+#define ID_TEX_BLACK 50
 
 
 #define OBJECT_TYPE_MARIO	0
@@ -26,6 +27,7 @@
 
 #define OBJECT_TYPE_TURTLE 11
 #define OBJECT_TYPE_FLOWER 12
+#define OBJECT_TYPE_BLACK_BOX 13
 #define OBJECT_TYPE_PORTAL	50
 
 

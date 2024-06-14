@@ -5,6 +5,7 @@
 #include "Mario.h"
 #include "ObjBlock.h"
 #include "Platform.h"
+#include "Brick.h"
 
 CTurtle::CTurtle(float x, float y, float dis) : CGameObject(x, y)
 {
@@ -56,6 +57,14 @@ void CTurtle::OnCollisionWith(LPCOLLISIONEVENT e)
 				e->obj->SetState(GOOMBA_STATE_DIE);
 			}
 			if (dynamic_cast<CObjBlock*>(e->obj)) {
+				if (e->nx > 0) {
+					SetState(TURTLE_STATE_SPIN_RIGHT);
+				}
+				else if (e->nx < 0) {
+					SetState(TURTLE_STATE_SPIN_LEFT);
+				}
+			}
+			if (dynamic_cast<CBrick*>(e->obj)) {
 				if (e->nx > 0) {
 					SetState(TURTLE_STATE_SPIN_RIGHT);
 				}
