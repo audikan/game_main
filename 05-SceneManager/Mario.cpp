@@ -54,7 +54,6 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	{
 		vx = 0;
 	}
-
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
@@ -73,6 +72,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithTurtle(e);
 	else if (dynamic_cast<CBlackBox*>(e->obj))
 		OnCollisionWithBlackBox(e);
+
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -84,7 +84,12 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	{
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
-			goomba->SetState(GOOMBA_STATE_DIE);
+			if (goomba->GetState() == GOOMBA_STATE_FLY || goomba->GetState() == GOOMBA_STATE_FLY_WALK) {
+				goomba->SetState(GOOMBA_STATE_WALKING);
+			}
+			else {
+				goomba->SetState(GOOMBA_STATE_DIE);
+			}
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
 	}
@@ -108,6 +113,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		}
 	}
 }
+
 
 void CMario::OnCollisionWithTurtle(LPCOLLISIONEVENT e)
 {
@@ -134,11 +140,8 @@ void CMario::OnCollisionWithTurtle(LPCOLLISIONEVENT e)
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
 	}
-	if (turtle->GetState() == TURTLE_STATE_DIE) {
-		if (e->nx > 0) turtle->SetState(TURTLE_STATE_SPIN_LEFT);
-		if (e->nx < 0) turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
-	}
-	if (e->nx !=0 && turtle->GetState()!= TURTLE_STATE_DIE)
+
+	if (e->nx != 0 && turtle->GetState() != TURTLE_STATE_DIE)
 	{
 		if (untouchable == 0)
 		{
@@ -154,6 +157,11 @@ void CMario::OnCollisionWithTurtle(LPCOLLISIONEVENT e)
 			}
 		}
 	}
+	if (turtle->GetState() == TURTLE_STATE_DIE) {
+		if (e->nx > 0) turtle->SetState(TURTLE_STATE_SPIN_LEFT);
+		if (e->nx < 0) turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
+	}
+
 }
 
 void CMario::OnCollisionWithFlower(LPCOLLISIONEVENT e)

@@ -23,7 +23,6 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				SetState(FLOWER_STATE_FIRE);
 			}
 	}
-	\
 	if (state == FLOWER_STATE_FIRE) {
 		if (GetTickCount64() - fire_time > 500) {
 			fireMario();
@@ -37,8 +36,18 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				y += 0.5f;
 			}
 			if (y == y_temp) {
-				if (GetTickCount64() - fire_time == 4000) {
-					SetState(FLOWER_STATE_NOL);
+				if (GetTickCount64() - fire_time > 4000) {
+					float mario_x, mario_y, x_dis, y_dis;
+					CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+					mario->GetPosition(mario_x, mario_y);
+
+					x_dis = mario_x - x;
+					y_dis = mario_y - y;
+
+					float angle = atan2(y_dis, x_dis);
+					if (abs(x_dis) < 200.0f) {
+						SetState(FLOWER_STATE_NOL);
+					}
 				}
 			}
 		}
@@ -61,7 +70,7 @@ void CFlower::fireMario() {
 	float angle = atan2(y_dis, x_dis);
 
 	// Tạo viên đạn và bắn
-	if (x_dis < 240.0f) {
+	if (abs(x_dis) < 400.0f) {
 		LPSCENE a = CGame::GetInstance()->GetCurrentScene();
 		CPlayScene* playScene = dynamic_cast<CPlayScene*>(a);
 		CBullet* c = new CBullet(x - 3.0f, y, angle);

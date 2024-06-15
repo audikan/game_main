@@ -17,6 +17,7 @@
 #include "Turtle.h"
 #include "BlackBox.h"
 #include "SampleKeyEventHandler.h"
+#include "Goomba.h"
 
 using namespace std;
 
@@ -126,6 +127,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
 	case OBJECT_TYPE_FLOWER: obj = new CFlower(x, y); break;
+
+	case OBJECT_TYPE_GOOMBA_FLY: obj = new CGoomba(x, y,1); break;
 	case OBJECT_TYPE_PLATFORM:
 	{
 
