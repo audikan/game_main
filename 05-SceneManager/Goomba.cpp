@@ -44,7 +44,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 		right = left + GOOMBA_FLY_WALK_BBOX_WIDTH;
 		bottom = top + GOOMBA_FLY_WALK_BBOX_HEIGHT;
 	}
-	else
+	if (state == GOOMBA_STATE_WALKING)
 	{ 
 		left = x - GOOMBA_BBOX_WIDTH/2;
 		top = y - GOOMBA_BBOX_HEIGHT/2;
@@ -120,7 +120,7 @@ void CGoomba::Render()
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x,y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)

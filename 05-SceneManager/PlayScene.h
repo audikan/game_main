@@ -37,6 +37,11 @@ public:
 	void addObj(LPGAMEOBJECT obj) {
 		objects.push_back(obj);
 	}
+
+	vector<LPGAMEOBJECT> getListObj() {
+		return objects;
+	}
+
 	void Clear();
 	void PurgeDeletedObjects();
 
