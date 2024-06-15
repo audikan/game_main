@@ -13,23 +13,56 @@ void CFlower::GetBoundingBox(float& left, float& top, float& right, float& botto
 
 void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (state == FLOWER_STATE_NOL){
+	float mario_x, mario_y, x_dis, y_dis;
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	mario->GetPosition(mario_x, mario_y);
+
+	x_dis = mario_x - x;
+	
+	if (x_dis > 0) {
+		switch (state)
+		{
+			case FLOWER_STATE_FIRE_LEFT:
+				state = FLOWER_STATE_FIRE_RIGHT;
+				break;
+			case FLOWER_STATE_NOL_LEFT:
+				state = FLOWER_STATE_NOL_RIGHT;
+				break;
+		}
+	}
+	else {
+		switch (state)
+		{
+		case FLOWER_STATE_FIRE_RIGHT:
+			state = FLOWER_STATE_FIRE_LEFT;
+			break;
+		case FLOWER_STATE_NOL_RIGHT:
+			state = FLOWER_STATE_NOL_LEFT;
+			break;
+		}
+
+	}
+	if (state == FLOWER_STATE_NOL_LEFT || state == FLOWER_STATE_NOL_RIGHT){
 			if (y > y_temp - 23.0f)
 			{
 				y -= 0.5f;
 				fire_time = GetTickCount64();
 			}
 			if ((y <= y_temp - 23.0f) &&(GetTickCount64() - fire_time > 1000)) {
-				SetState(FLOWER_STATE_FIRE);
+				if (x_dis > 0) SetState(FLOWER_STATE_FIRE_RIGHT);
+				if (x_dis <= 0) SetState(FLOWER_STATE_FIRE_LEFT);
 			}
 	}
-	if (state == FLOWER_STATE_FIRE) {
+	if (state == FLOWER_STATE_FIRE_LEFT || state == FLOWER_STATE_FIRE_RIGHT) {
 		if (GetTickCount64() - fire_time > 500) {
 			fireMario();
-			SetState(FLOWER_STATE_NOL_LAN);
+
+			if (x_dis > 0) SetState(FLOWER_STATE_NOL_LAN_RIGHT);
+			if (x_dis <= 0) SetState(FLOWER_STATE_NOL_LAN_LEFT);
+			
 		}			
 	}
-	if (state == FLOWER_STATE_NOL_LAN) {
+	if (state == FLOWER_STATE_NOL_LAN_LEFT || state == FLOWER_STATE_NOL_LAN_RIGHT) {
 		if (GetTickCount64() - fire_time > 1000) {
 			if (y < y_temp)
 			{
@@ -46,7 +79,8 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 					float angle = atan2(y_dis, x_dis);
 					if (abs(x_dis) < 200.0f) {
-						SetState(FLOWER_STATE_NOL);
+						if(x_dis <= 0) SetState(FLOWER_STATE_NOL_LEFT);
+						if (x_dis > 0) SetState(FLOWER_STATE_NOL_RIGHT);
 					}
 				}
 			}
@@ -59,7 +93,7 @@ void CFlower::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 }
 
 void CFlower::fireMario() {
-	float mario_x, mario_y, x_dis, y_dis;
+	float mario_x, mario_y, x_dis, y_dis, x_bul, y_bul;
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	mario->GetPosition(mario_x, mario_y);
 
@@ -67,13 +101,16 @@ void CFlower::fireMario() {
 	x_dis = mario_x - x;
 	y_dis = mario_y - y;
 
+	if (x_dis <= 0) x_bul = x - 6.0f;
+	if (x_dis > 0) x_bul = x + 6.0f;
+
 	float angle = atan2(y_dis, x_dis);
 
 	// Tạo viên đạn và bắn
 	if (abs(x_dis) < 400.0f) {
 		LPSCENE a = CGame::GetInstance()->GetCurrentScene();
 		CPlayScene* playScene = dynamic_cast<CPlayScene*>(a);
-		CBullet* c = new CBullet(x - 3.0f, y, angle);
+		CBullet* c = new CBullet(x_bul, y, angle);
 		playScene->addObj(c);
 	}
 }
@@ -81,10 +118,30 @@ void CFlower::fireMario() {
 
 void CFlower::Render()
 {
-	int aniId = ID_ANI_FLOWER;
-	if (state == FLOWER_STATE_FIRE)
+	int aniId = ID_ANI_FLOWER_LEFT;
+	if (state == FLOWER_STATE_FIRE_LEFT)
 	{
-		aniId = ID_ANI_FLOWER_FIRE;
+		aniId = ID_ANI_FLOWER_FIRE_LEFT;
+	}
+	if (state == FLOWER_STATE_FIRE_RIGHT)
+	{
+		aniId = ID_ANI_FLOWER_FIRE_RIGHT;
+	}
+	if (state == FLOWER_STATE_NOL_LEFT)
+	{
+		aniId = ID_ANI_FLOWER_LEFT;
+	}
+	if (state == FLOWER_STATE_NOL_RIGHT)
+	{
+		aniId = ID_ANI_FLOWER_RIGHT;
+	}
+	if (state == FLOWER_STATE_NOL_LAN_RIGHT)
+	{
+		aniId = ID_ANI_FLOWER_RIGHT;
+	}
+	if (state == FLOWER_STATE_NOL_LAN_LEFT)
+	{
+		aniId = ID_ANI_FLOWER_LEFT;
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
@@ -96,13 +153,22 @@ void CFlower::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
-	case FLOWER_STATE_NOL_LAN:
+	case FLOWER_STATE_NOL_LAN_LEFT:
 		fire_time = GetTickCount64();
 		break;
-	case FLOWER_STATE_FIRE:
+	case FLOWER_STATE_NOL_LAN_RIGHT:
 		fire_time = GetTickCount64();
 		break;
-	case FLOWER_STATE_NOL:
+	case FLOWER_STATE_FIRE_LEFT:
+		fire_time = GetTickCount64();
+		break;
+	case FLOWER_STATE_FIRE_RIGHT:
+		fire_time = GetTickCount64();
+		break;
+	case FLOWER_STATE_NOL_LEFT:
+		fire_time = GetTickCount64();
+		break;
+	case FLOWER_STATE_NOL_RIGHT:
 		fire_time = GetTickCount64();
 		break;
 	}

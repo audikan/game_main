@@ -8,6 +8,8 @@ CGoomba::CGoomba(float x, float y):CGameObject(x, y)
 	this->ay = GOOMBA_GRAVITY;
 	die_start = -1;
 	SetState(GOOMBA_STATE_WALKING);
+	act = 0;
+	vx = 0;
 }
 CGoomba::CGoomba(float x, float y, int i) :CGameObject(x, y)
 {
@@ -15,6 +17,7 @@ CGoomba::CGoomba(float x, float y, int i) :CGameObject(x, y)
 	this->ay = GOOMBA_GRAVITY;
 	die_start = -1;
 	SetState(GOOMBA_STATE_FLY_WALK);
+	act = 0;
 	vx = 0;
 }
 
@@ -76,23 +79,22 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	float mario_x, mario_y, x_dis, y_dis;
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	mario->GetPosition(mario_x, mario_y);
-
-	if (x - mario_x <= 270) {
-		if ((state == GOOMBA_STATE_FLY_WALK) && (GetTickCount64() - time_fly > GOOMBA_DIE_TIMEOUT)) { // 5s sau khi bay thì bay tiếp
-			SetState(GOOMBA_STATE_FLY);
-			vy = -GOOMBA_WALKING_SPEED * 3;
-		}
-		if ((state == GOOMBA_STATE_FLY) && (GetTickCount64() - time_fly > GOOMBA_DIE_TIMEOUT * 8))
-			SetState(GOOMBA_STATE_FLY_WALK);
-
-		if ((state == GOOMBA_STATE_DIE) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT))
-		{
-			isDeleted = true;
-			return;
-		}
+	if (abs(x - mario_x) <= 170 && act == 0) {
+		act = 1;
+		vx = -GOOMBA_WALKING_SPEED;
 	}
+	if ((state == GOOMBA_STATE_FLY_WALK) && (GetTickCount64() - time_fly > GOOMBA_DIE_TIMEOUT)) {
+		SetState(GOOMBA_STATE_FLY);
+		vy = -GOOMBA_WALKING_SPEED * 3;
+	}
+	if ((state == GOOMBA_STATE_FLY) && (GetTickCount64() - time_fly > GOOMBA_DIE_TIMEOUT * 8))
+		SetState(GOOMBA_STATE_FLY_WALK);
 
-
+	if ((state == GOOMBA_STATE_DIE) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT))
+	{
+		isDeleted = true;
+		return;
+	}
 	vy += ay * dt;
 	vx += ax * dt;
 

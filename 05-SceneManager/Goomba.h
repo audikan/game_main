@@ -32,7 +32,7 @@ class CGoomba : public CGameObject
 protected:
 	float ax;				
 	float ay; 
-
+	int act;
 	ULONGLONG die_start, time_fly;
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);

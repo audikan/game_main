@@ -107,10 +107,10 @@ class CMario : public CGameObject
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
-
+	int goomba;
 	int level; 
 	int untouchable; 
-	ULONGLONG untouchable_start;
+	ULONGLONG untouchable_start, time_create_goomba;
 	BOOLEAN isOnPlatform;
 	int coin; 
 
@@ -136,8 +136,9 @@ public:
 		isSitting = false;
 		maxVx = 0.0f;
 		ax = 0.0f;
+		goomba = 0;
 		ay = MARIO_GRAVITY; 
-
+		time_create_goomba = GetTickCount64();
 		level = MARIO_LEVEL_BIG;
 		untouchable = 0;
 		untouchable_start = -1;
