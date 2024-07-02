@@ -16,9 +16,12 @@ CGoomba::CGoomba(float x, float y, int i) :CGameObject(x, y)
 	this->ax = 0;
 	this->ay = GOOMBA_GRAVITY;
 	die_start = -1;
-	SetState(GOOMBA_STATE_FLY_WALK);
-	act = 0;
-	vx = 0;
+	SetState(GOOMBA_STATE_WALKING);
+	if (i == 1) {
+		SetState(GOOMBA_STATE_FLY_WALK);
+		act = 0;
+		vx = 0;
+	}	
 }
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
@@ -79,7 +82,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	float mario_x, mario_y, x_dis, y_dis;
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	mario->GetPosition(mario_x, mario_y);
-	if (abs(x - mario_x) <= 170 && act == 0) {
+	if (abs(x - mario_x) <= 270 && act == 0) {
 		act = 1;
 		vx = -GOOMBA_WALKING_SPEED;
 	}
