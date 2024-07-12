@@ -67,10 +67,13 @@ void CTurtle::OnCollisionWith(LPCOLLISIONEVENT e)
 				}
 			}
 			if (dynamic_cast<CBrick*>(e->obj)) {
+				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
 				if (e->nx > 0) {
+					if(brick->GetState() == STATE_BRICK)	brick->SetState(STATE_BRICK_BOOM);
 					SetState(TURTLE_STATE_SPIN_RIGHT);
 				}
 				else if (e->nx < 0) {
+					if (brick->GetState() == STATE_BRICK)	brick->SetState(STATE_BRICK_BOOM);
 					SetState(TURTLE_STATE_SPIN_LEFT);
 				}
 			}
