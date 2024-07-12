@@ -40,7 +40,7 @@ public:
 		y -= 5.0f;
 	}
 	void createCoin();
-	void createMushroom();
+	void createMushroom(int m);
 	void Render();
 	virtual void SetState(int state) {
 		CGameObject::SetState(state);

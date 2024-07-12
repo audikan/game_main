@@ -28,11 +28,11 @@ void CBox::createCoin() {
 	CCoin* c = new CCoin(x, y, 1);
 	playScene->addObj(c);
 }
-void CBox::createMushroom() {
+void CBox::createMushroom(int m) {
 	LPSCENE a = CGame::GetInstance()->GetCurrentScene();
 	CPlayScene* playScene = dynamic_cast<CPlayScene*>(a);
 
-	CMushroom* c = new CMushroom(x, y);
+	CMushroom* c = new CMushroom(x, y, m);
 	c->setInBox();
 	playScene->addObj(c);
 }
