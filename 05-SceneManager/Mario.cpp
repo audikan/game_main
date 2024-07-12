@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include "debug.h"
 
 #include "Mario.h"
@@ -47,7 +47,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
-		if (e->ny < 0) isOnPlatform = true;
+		if (e->ny < 0) {
+			isOnPlatform = true;
+			ay = MARIO_GRAVITY;
+		};
 	}
 	else 
 	if (e->nx != 0 && e->obj->IsBlocking())
@@ -220,7 +223,16 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
 	if (e != 0)
 	{
-		level = MARIO_LEVEL_BIG;
+		if (mushroom->getType() == 2) {
+			if (level == MARIO_LEVEL_BIG) {
+				SetLevel(MARIO_LEVEL_SUPER);
+			}if (level == MARIO_LEVEL_SMALL) {
+				SetLevel(MARIO_LEVEL_BIG);
+			}
+			
+		}if (mushroom->getType() == 1) {
+			SetLevel(MARIO_LEVEL_BIG);
+		}		
 		y -= 16.0f;
 		e->obj->Delete();
 	}
@@ -259,7 +271,13 @@ void CMario::OnCollisionWithBox(LPCOLLISIONEVENT e)
 					if (box->getCoins() == 0) box->SetState(STATE_BOX_ACTIVE);
 				}
 			}if (box->getType() == 2) {
-				box->createMushroom();
+				if (level == MARIO_LEVEL_BIG) {
+					box->createMushroom(2);
+				}if (level == MARIO_LEVEL_SMALL) {
+					box->createMushroom(1);
+				}if (level == MARIO_LEVEL_SUPER) {
+					box->createMushroom(2);
+				}
 				box->SetState(STATE_BOX_ACTIVE);
 			}
 		}
@@ -387,6 +405,64 @@ int CMario::GetAniIdBig()
 
 	return aniId;
 }
+//==============================================================================
+int CMario::GetAniIdSuper()
+{
+	int aniId = -1;
+	if (!isOnPlatform)
+	{
+		if (abs(ax) == MARIO_ACCEL_RUN_X)
+		{
+			if (nx >= 0)
+				aniId = ID_ANI_MARIO_JUMP_RUN_RIGHT_DUOI;
+			else
+				aniId = ID_ANI_MARIO_JUMP_RUN_LEFT_DUOI;
+		}
+		else
+		{
+			if (nx >= 0)
+				aniId = ID_ANI_MARIO_JUMP_WALK_RIGHT_DUOI;
+			else
+				aniId = ID_ANI_MARIO_JUMP_WALK_LEFT_DUOI;
+		}
+	}
+	else
+		if (isSitting)
+		{
+			if (nx > 0)
+				aniId = ID_ANI_MARIO_SIT_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_SIT_LEFT;
+		}
+		else
+			if (vx == 0)
+			{
+				if (nx > 0) aniId = ID_ANI_MARIO_IDLE_RIGHT_DUOI;
+				else aniId = ID_ANI_MARIO_IDLE_LEFT_DUOI;
+			}
+			else if (vx > 0)
+			{
+				if (ax < 0)
+					aniId = ID_ANI_MARIO_BRACE_RIGHT_DUOI;
+				else if (ax == MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_RUNNING_RIGHT_DUOI;
+				else if (ax == MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_WALKING_RIGHT_DUOI;
+			}
+			else // vx < 0
+			{
+				if (ax > 0)
+					aniId = ID_ANI_MARIO_BRACE_LEFT_DUOI;
+				else if (ax == -MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_RUNNING_LEFT_DUOI;
+				else if (ax == -MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_WALKING_LEFT_DUOI;
+			}
+
+	if (aniId == -1) aniId = ID_ANI_MARIO_IDLE_RIGHT_DUOI;
+
+	return aniId;
+}
 
 void CMario::Render()
 {
@@ -399,6 +475,8 @@ void CMario::Render()
 		aniId = GetAniIdBig();
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
+	else if (level == MARIO_LEVEL_SUPER)
+		aniId = GetAniIdSuper();
 
 	animations->Get(aniId)->Render(x, y);
 
@@ -439,6 +517,7 @@ void CMario::SetState(int state)
 		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
+		if (level == MARIO_LEVEL_SUPER) ay = MARIO_GRAVITY / 1.5;
 		if (isSitting) break;
 		if (isOnPlatform)
 		{
@@ -449,8 +528,24 @@ void CMario::SetState(int state)
 		}
 		break;
 
-	case MARIO_STATE_RELEASE_JUMP:
-		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 2;
+	case MARIO_STATE_RELEASE_JUMP: // hạ cánh
+		if (vy < 0) {
+			switch (level)
+			{
+			case MARIO_LEVEL_BIG:
+				vy += MARIO_JUMP_SPEED_Y / 2;
+				break;
+			case MARIO_LEVEL_SMALL:
+				vy += MARIO_JUMP_SPEED_Y / 2;
+				break;
+			case MARIO_LEVEL_SUPER:
+				ay = MARIO_GRAVITY / 3;
+				vy += MARIO_JUMP_SPEED_Y / 2;
+				break;
+			default:
+				break;
+			}
+		}
 		break;
 
 	case MARIO_STATE_SIT:
@@ -489,7 +584,7 @@ void CMario::SetState(int state)
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (level==MARIO_LEVEL_BIG)
+	if (level==MARIO_LEVEL_BIG || level == MARIO_LEVEL_SUPER)
 	{
 		if (isSitting)
 		{
