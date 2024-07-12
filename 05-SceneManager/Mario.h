@@ -39,6 +39,7 @@
 #define MARIO_STATE_RELEASE_JUMP_DUOI   2200
 
 
+
 #pragma region ANIMATION_ID
 
 #define ID_ANI_MARIO_IDLE_RIGHT 400
@@ -102,6 +103,12 @@
 #define ID_ANI_MARIO_JUMP_RUN_RIGHT_DUOI 1761
 #define ID_ANI_MARIO_JUMP_RUN_LEFT_DUOI 1760
 
+// NEM RUA
+#define ID_ANI_MARIO_SMALL_RUN_RIGHT_RUA 1801
+#define ID_ANI_MARIO_SMALL_RUN_LEFT_RUA 1800
+
+#define ID_ANI_MARIO_SMALL_IDLE_RIGHT_RUA 1811
+#define ID_ANI_MARIO_SMALL_IDLE_LEFT_RUA 1810
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -133,7 +140,7 @@ class CMario : public CGameObject
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 	int goomba;
-	int level; 
+	int level, hasTurtle; 
 	int untouchable; 
 	ULONGLONG untouchable_start, time_create_goomba;
 	BOOLEAN isOnPlatform;
@@ -162,6 +169,7 @@ public:
 		isSitting = false;
 		maxVx = 0.0f;
 		ax = 0.0f;
+		hasTurtle = 0;
 		goomba = 0;
 		ay = MARIO_GRAVITY; 
 		time_create_goomba = GetTickCount64();
@@ -189,4 +197,10 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+	void setTurtle(int i) {
+		this->hasTurtle = i;
+	}
+	int getTurtle() {
+		return hasTurtle;
+	}
 };

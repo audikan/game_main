@@ -33,6 +33,7 @@ protected:
 	float dis, x_temp;
 	float ax;
 	float ay;
+	int hasMario;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
@@ -50,5 +51,8 @@ public:
 	}
 	float get_x() {
 		return x;
+	}
+	void setHasMario() {
+		this->hasMario = 1;
 	}
 };

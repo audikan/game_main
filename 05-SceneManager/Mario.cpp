@@ -161,8 +161,16 @@ void CMario::OnCollisionWithTurtle(LPCOLLISIONEVENT e)
 		}
 	}
 	if (turtle->GetState() == TURTLE_STATE_DIE) {
-		if (e->nx > 0) turtle->SetState(TURTLE_STATE_SPIN_LEFT);
-		if (e->nx < 0) turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
+		if ((state == MARIO_STATE_RUNNING_RIGHT || state == MARIO_STATE_RUNNING_LEFT) && hasTurtle == 0) {
+			hasTurtle = 1;
+			turtle->setHasMario();
+		}
+		else if (e->nx > 0) {
+			turtle->SetState(TURTLE_STATE_SPIN_LEFT);
+		}
+		else if (e->nx < 0) {
+			turtle->SetState(TURTLE_STATE_SPIN_RIGHT);
+		}
 	}
 
 }
@@ -317,15 +325,29 @@ int CMario::GetAniIdSmall()
 		else
 			if (vx == 0)
 			{
-				if (nx > 0) aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
-				else aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT;
+				if (nx > 0) {
+					aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT;
+					if (hasTurtle == 1) {
+						aniId = ID_ANI_MARIO_SMALL_IDLE_RIGHT_RUA;
+					}
+				}
+				else {
+					aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT;
+					if (hasTurtle == 1) {
+						aniId = ID_ANI_MARIO_SMALL_IDLE_LEFT_RUA;
+					}
+				}
 			}
 			else if (vx > 0)
 			{
 				if (ax < 0)
 					aniId = ID_ANI_MARIO_SMALL_BRACE_RIGHT;
-				else if (ax == MARIO_ACCEL_RUN_X)
+				else if (ax == MARIO_ACCEL_RUN_X) {
 					aniId = ID_ANI_MARIO_SMALL_RUNNING_RIGHT;
+					if (hasTurtle == 1) {
+						aniId = ID_ANI_MARIO_SMALL_RUN_RIGHT_RUA;
+					}
+				}
 				else if (ax == MARIO_ACCEL_WALK_X)
 					aniId = ID_ANI_MARIO_SMALL_WALKING_RIGHT;
 			}
@@ -333,8 +355,15 @@ int CMario::GetAniIdSmall()
 			{
 				if (ax > 0)
 					aniId = ID_ANI_MARIO_SMALL_BRACE_LEFT;
-				else if (ax == -MARIO_ACCEL_RUN_X)
+				else if (ax == -MARIO_ACCEL_RUN_X) {
 					aniId = ID_ANI_MARIO_SMALL_RUNNING_LEFT;
+
+					if (hasTurtle == 1) {
+						aniId = ID_ANI_MARIO_SMALL_RUN_LEFT_RUA;
+					}
+
+				}
+
 				else if (ax == -MARIO_ACCEL_WALK_X)
 					aniId = ID_ANI_MARIO_SMALL_WALKING_LEFT;
 			}
@@ -437,8 +466,12 @@ int CMario::GetAniIdSuper()
 		else
 			if (vx == 0)
 			{
-				if (nx > 0) aniId = ID_ANI_MARIO_IDLE_RIGHT_DUOI;
-				else aniId = ID_ANI_MARIO_IDLE_LEFT_DUOI;
+				if (nx > 0) {
+					aniId = ID_ANI_MARIO_IDLE_RIGHT_DUOI;
+				}
+				else {
+					aniId = ID_ANI_MARIO_IDLE_LEFT_DUOI;
+				}
 			}
 			else if (vx > 0)
 			{
@@ -489,7 +522,6 @@ void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
 	if (this->state == MARIO_STATE_DIE) return; 
-
 	switch (state)
 	{
 	case MARIO_STATE_RUNNING_RIGHT:

@@ -3,6 +3,7 @@
 #include "Goomba.h"
 #include "Box.h"
 #include "Mario.h"
+#include "PlayScene.h"
 #include "ObjBlock.h"
 #include "Platform.h"
 #include "Brick.h"
@@ -12,6 +13,7 @@ CTurtle::CTurtle(float x, float y, float dis) : CGameObject(x, y)
 	x_temp = x;
 	this->dis = dis;
 	this->ax = 0;
+	this->hasMario = 0;
 	this->ay = TURTLE_GRAVITY;
 	SetState(TURTLE_STATE_WALK_LEFT);
 }
@@ -82,7 +84,7 @@ void CTurtle::OnCollisionWith(LPCOLLISIONEVENT e)
 			}
 			if (dynamic_cast<CBox*>(e->obj)) {
 				CBox* box = dynamic_cast<CBox*>(e->obj);
-				box->createMushroom();
+				box->createMushroom(1);
 				box->SetState(STATE_BOX_ACTIVE);
 				if (e->nx > 0) {
 					SetState(TURTLE_STATE_SPIN_RIGHT);
@@ -108,6 +110,10 @@ void CTurtle::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void CTurtle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	float mario_x, mario_y;
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	mario->GetPosition(mario_x, mario_y);
+
 	if (dis > 0) {
 		if (x_temp - x > dis) {
 			SetState(TURTLE_STATE_WALK_RIGHT);
@@ -118,7 +124,23 @@ void CTurtle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	vy += ay * dt;
 	vx += ax * dt;
+	if (state == TURTLE_STATE_DIE && hasMario == 1) {
+		if (mario->GetState() == MARIO_STATE_RUNNING_RIGHT) {
+			this->x = mario_x + 12.0f;
+		}
+		if (mario->GetState() == MARIO_STATE_RUNNING_LEFT) {
+			this->x = mario_x - 12.0f;
+		}
+		this->y = mario_y - 2;
+	}
+	if (mario->getTurtle() == 0 && hasMario == 1 && state == TURTLE_STATE_DIE) {
+		hasMario = 0;
+		if (x - mario_x > 0)
+			SetState(TURTLE_STATE_SPIN_RIGHT);
+		else
+			SetState(TURTLE_STATE_SPIN_LEFT);
 
+	}
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
