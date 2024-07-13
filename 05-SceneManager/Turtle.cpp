@@ -7,6 +7,7 @@
 #include "ObjBlock.h"
 #include "Platform.h"
 #include "Brick.h"
+#include "Bullet.h"
 
 CTurtle::CTurtle(float x, float y, float dis) : CGameObject(x, y)
 {
@@ -50,6 +51,7 @@ void CTurtle::OnNoCollision(DWORD dt)
 
 void CTurtle::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+
 	if (e->ny < 0) {
 		vy = 0;
 	}
@@ -108,6 +110,22 @@ void CTurtle::OnCollisionWith(LPCOLLISIONEVENT e)
 				}
 			}
 		}
+	}if (e != 0) {
+		CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		if (state == TURTLE_STATE_DIE && hasMario == 1) {
+			if (dynamic_cast<CGoomba*>(e->obj)) {
+				e->obj->SetState(GOOMBA_STATE_DIE);
+				isDeleted = true;
+				mario->setTurtle(0);
+				hasMario = 0;
+			}
+			if (dynamic_cast<CBullet*>(e->obj)) {
+				e->obj->Delete();
+				mario->setTurtle(0);
+				hasMario = 0;;
+			}
+			
+		}
 	}
 }
 
@@ -143,6 +161,9 @@ void CTurtle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		else
 			SetState(TURTLE_STATE_SPIN_LEFT);
 
+	}
+	if (state == TURTLE_STATE_DIE && GetTickCount64() - time_reborn > 10000) {
+		SetState(TURTLE_STATE_WALK_LEFT);
 	}
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -200,8 +221,8 @@ void CTurtle::SetState(int state)
 	case TURTLE_STATE_DIE:
 		vx = 0;
 		vy = 0;
-		ay = 0;
-		y += 5.0f;
+		y += 4.0f;
+		time_reborn = GetTickCount64();
 		break;
 	case TURTLE_STATE_SPIN_LEFT:
 		vx = -TURTLE_WALKING_SPEED*4;

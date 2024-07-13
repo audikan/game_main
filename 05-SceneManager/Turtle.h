@@ -33,6 +33,7 @@ protected:
 	float dis, x_temp;
 	float ax;
 	float ay;
+	ULONGLONG time_reborn;
 	int hasMario;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
