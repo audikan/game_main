@@ -539,6 +539,10 @@ int CMario::GetAniIdSuper()
 			}
 
 	if (aniId == -1) aniId = ID_ANI_MARIO_IDLE_RIGHT_DUOI;
+	if (state == MARIO_STATE_FLY) {
+		if(this->nx >0)aniId = ID_ANI_MARIO_JUMP_WALK_RIGHT_DUOI;
+		else aniId = ID_ANI_MARIO_JUMP_WALK_LEFT_DUOI;
+	}
 	if (state == MARIO_STATE_XOAY_DUOI) {
 		aniId == ID_ANI_MARIO_XOAY_LEFT;
 	}
@@ -614,8 +618,7 @@ void CMario::SetState(int state)
 		break;
 	
 	case MARIO_STATE_JUMP_2:
-		ay = MARIO_GRAVITY / 4;
-		vy = -MARIO_JUMP_SPEED_Y / 4;
+		vy = MARIO_JUMP_SPEED_Y / 15;
 		break;
 
 	case MARIO_STATE_RELEASE_JUMP: // hạ cánh
@@ -660,6 +663,9 @@ void CMario::SetState(int state)
 	case MARIO_STATE_IDLE:
 		ax = 0.0f;
 		vx = 0.0f;
+		break;
+	case MARIO_STATE_FLY:
+		vy = -MARIO_JUMP_SPEED_Y / 3;
 		break;
 
 	case MARIO_STATE_DIE:
