@@ -20,7 +20,7 @@ void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 
 void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if ((state == STATE_BRICK_BOOM) && (GetTickCount64() - time_boom > 300))
+	if ((state == STATE_BRICK_BOOM) && (GetTickCount64() - time_boom > 200))
 	{
 		isDeleted = true;
 		return;

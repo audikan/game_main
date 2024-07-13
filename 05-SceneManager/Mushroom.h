@@ -18,7 +18,7 @@ protected:
 	float ay;
 	float y_temp, x_temp;
 	bool inBox;
-	int type; // 1 - nấm, 2 - lá
+	int type; // 1 - nấm, 2 - lá, 3 - BOOM
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
