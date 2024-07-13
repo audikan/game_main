@@ -26,6 +26,7 @@
 
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_RELEASE_JUMP    301
+#define MARIO_STATE_JUMP_2			302
 
 #define MARIO_STATE_RUNNING_RIGHT	400
 #define MARIO_STATE_RUNNING_LEFT	500
@@ -33,10 +34,7 @@
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
 
-#define MARIO_STATE_IDLE_DUOI		2000
-#define MARIO_STATE_WALKING_RIGHT_DUOI	2100
-#define MARIO_STATE_WALKING_LEFT_DUOI	2101
-#define MARIO_STATE_RELEASE_JUMP_DUOI   2200
+#define MARIO_STATE_XOAY_DUOI		787
 
 
 
@@ -103,19 +101,27 @@
 #define ID_ANI_MARIO_JUMP_RUN_RIGHT_DUOI 1761
 #define ID_ANI_MARIO_JUMP_RUN_LEFT_DUOI 1760
 
+#define ID_ANI_MARIO_XOAY_LEFT 1771
+#define ID_ANI_MARIO_XOAY_RIGHT 1770
 // NEM RUA
 #define ID_ANI_MARIO_SMALL_RUN_RIGHT_RUA 1801
 #define ID_ANI_MARIO_SMALL_RUN_LEFT_RUA 1800
-
 #define ID_ANI_MARIO_SMALL_IDLE_RIGHT_RUA 1811
 #define ID_ANI_MARIO_SMALL_IDLE_LEFT_RUA 1810
+
+#define ID_ANI_MARIO_RUN_RIGHT_RUA 1821
+#define ID_ANI_MARIO_RUN_LEFT_RUA 1820
+#define ID_ANI_MARIO_IDLE_RIGHT_RUA 1831
+#define ID_ANI_MARIO_IDLE_LEFT_RUA 1830
+
+#define ID_ANI_MARIO_DUOI_RUN_RIGHT_RUA 1841
+#define ID_ANI_MARIO_DUOI_RUN_LEFT_RUA 1840
+#define ID_ANI_MARIO_DUOI_IDLE_RIGHT_RUA 1851
+#define ID_ANI_MARIO_DUOI_IDLE_LEFT_RUA 1850
+
+
 #pragma endregion
-
 #define GROUND_Y 160.0f
-
-
-
-
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
 #define MARIO_LEVEL_SUPER	3
@@ -140,7 +146,7 @@ class CMario : public CGameObject
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 	int goomba;
-	int level, hasTurtle; 
+	int level, hasTurtle, xoay; 
 	int untouchable; 
 	ULONGLONG untouchable_start, time_create_goomba;
 	BOOLEAN isOnPlatform;
@@ -166,6 +172,7 @@ class CMario : public CGameObject
 public:
 	CMario(float x, float y) : CGameObject(x, y)
 	{
+		xoay = 0;
 		isSitting = false;
 		maxVx = 0.0f;
 		ax = 0.0f;
@@ -200,7 +207,19 @@ public:
 	void setTurtle(int i) {
 		this->hasTurtle = i;
 	}
+	void setxoay(int i) {
+		xoay = i;
+	}
+	int getXoay() {
+		return xoay;
+	}
 	int getTurtle() {
 		return hasTurtle;
+	}
+	int getLV() {
+		return level;
+	}
+	bool isplatform() {
+		return isOnPlatform;
 	}
 };
