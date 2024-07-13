@@ -36,7 +36,7 @@
 
 #define MARIO_STATE_XOAY_DUOI		787
 
-
+#define MARIO_STATE_FLY		788
 
 #pragma region ANIMATION_ID
 
